@@ -1,0 +1,722 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>常见问题 - 智酒店管家</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Source+Sans+Pro:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-blue: #1a365d;
+            --accent-gold: #d4af37;
+            --white: #ffffff;
+            --text-dark: #2d3748;
+            --text-light: #718096;
+            --bg-light: #f7fafc;
+            --border-color: #e2e8f0;
+            --shadow-subtle: 0 2px 8px rgba(0, 0, 0, 0.08);
+            --shadow-medium: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        body {
+            font-family: 'Source Sans Pro', sans-serif;
+            background: var(--bg-light);
+            min-height: 100vh;
+            padding-bottom: 80px;
+        }
+
+        .header {
+            background: var(--white);
+            padding: 20px;
+            box-shadow: var(--shadow-subtle);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-content {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .logo {
+            font-family: 'Playfair Display', serif;
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--primary-blue);
+            letter-spacing: 0.5px;
+            margin-bottom: 20px;
+        }
+
+        .search-bar {
+            display: flex;
+            gap: 12px;
+        }
+
+        .search-input {
+            flex: 1;
+            padding: 14px 16px;
+            border: 2px solid var(--border-color);
+            border-radius: 25px;
+            font-size: 15px;
+            font-family: 'Source Sans Pro', sans-serif;
+            transition: all 0.3s ease;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: var(--accent-gold);
+            box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.1);
+        }
+
+        .search-btn {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, var(--primary-blue) 0%, #2c5282 100%);
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .search-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 12px rgba(26, 54, 93, 0.3);
+        }
+
+        .search-btn svg {
+            width: 24px;
+            height: 24px;
+            fill: var(--white);
+        }
+
+        .main-container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .category-tabs {
+            display: flex;
+            gap: 12px;
+            overflow-x: auto;
+            padding: 10px 0 20px;
+            scrollbar-width: none;
+        }
+
+        .category-tabs::-webkit-scrollbar {
+            display: none;
+        }
+
+        .category-tab {
+            padding: 10px 20px;
+            background: var(--white);
+            border: 2px solid var(--border-color);
+            border-radius: 25px;
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--text-light);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+        }
+
+        .category-tab:hover {
+            border-color: var(--primary-blue);
+            color: var(--primary-blue);
+        }
+
+        .category-tab.active {
+            background: var(--primary-blue);
+            border-color: var(--primary-blue);
+            color: var(--white);
+        }
+
+        .faq-list {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .faq-item {
+            background: var(--white);
+            border-radius: 16px;
+            box-shadow: var(--shadow-subtle);
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .faq-item:hover {
+            box-shadow: var(--shadow-medium);
+        }
+
+        .faq-question {
+            padding: 20px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            transition: all 0.3s ease;
+        }
+
+        .faq-question:hover {
+            background: var(--bg-light);
+        }
+
+        .question-content {
+            flex: 1;
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--text-dark);
+            line-height: 1.5;
+        }
+
+        .expand-icon {
+            width: 24px;
+            height: 24px;
+            transition: transform 0.3s ease;
+        }
+
+        .expand-icon svg {
+            width: 100%;
+            height: 100%;
+            fill: var(--text-light);
+        }
+
+        .faq-item.expanded .expand-icon {
+            transform: rotate(180deg);
+        }
+
+        .faq-answer {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s ease;
+        }
+
+        .faq-item.expanded .faq-answer {
+            max-height: 500px;
+        }
+
+        .answer-content {
+            padding: 0 20px 20px;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .ai-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: linear-gradient(135deg, var(--primary-blue) 0%, #2c5282 100%);
+            color: var(--white);
+            padding: 6px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 500;
+            margin: 16px 0 12px;
+        }
+
+        .ai-badge svg {
+            width: 14px;
+            height: 14px;
+            fill: var(--white);
+        }
+
+        .answer-text {
+            font-size: 14px;
+            line-height: 1.8;
+            color: var(--text-dark);
+        }
+
+        .answer-text p {
+            margin-bottom: 12px;
+        }
+
+        .answer-text ul,
+        .answer-text ol {
+            margin-left: 20px;
+            margin-bottom: 12px;
+        }
+
+        .answer-text li {
+            margin-bottom: 8px;
+        }
+
+        .answer-text strong {
+            color: var(--primary-blue);
+            font-weight: 600;
+        }
+
+        .no-results {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--text-light);
+        }
+
+        .no-results svg {
+            width: 80px;
+            height: 80px;
+            margin-bottom: 20px;
+            fill: var(--border-color);
+        }
+
+        .no-results h3 {
+            font-size: 18px;
+            margin-bottom: 8px;
+            color: var(--text-dark);
+        }
+
+        .gold-line {
+            position: fixed;
+            bottom: 70px;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, var(--accent-gold), transparent);
+            z-index: 99;
+        }
+
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: var(--white);
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-around;
+            padding: 12px 0;
+            box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.05);
+            z-index: 100;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            padding: 4px 16px;
+        }
+
+        .nav-item svg {
+            width: 24px;
+            height: 24px;
+            fill: var(--text-light);
+            transition: all 0.3s ease;
+        }
+
+        .nav-item span {
+            font-size: 12px;
+            color: var(--text-light);
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .nav-item.active svg {
+            fill: var(--accent-gold);
+        }
+
+        .nav-item.active span {
+            color: var(--accent-gold);
+        }
+
+        .nav-item:hover svg {
+            fill: var(--primary-blue);
+        }
+
+        .nav-item:hover span {
+            color: var(--primary-blue);
+        }
+
+        .section-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 18px;
+            color: var(--primary-blue);
+            margin-bottom: 16px;
+            font-weight: 600;
+        }
+
+        .popular-questions {
+            margin-bottom: 30px;
+        }
+
+        .hot-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            background: linear-gradient(135deg, var(--accent-gold) 0%, #ecc94b 100%);
+            color: var(--white);
+            padding: 4px 10px;
+            border-radius: 8px;
+            font-size: 11px;
+            font-weight: 600;
+            margin-bottom: 12px;
+        }
+
+        .hot-tag svg {
+            width: 12px;
+            height: 12px;
+            fill: var(--white);
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="header-content">
+            <h1 class="logo">常见问题</h1>
+            <div class="search-bar">
+                <input 
+                    type="text" 
+                    class="search-input" 
+                    id="searchInput"
+                    placeholder="搜索问题，如：如何提高入住率？"
+                    oninput="handleSearch()"
+                >
+                <button class="search-btn">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main class="main-container">
+        <div class="category-tabs">
+            <button class="category-tab active" data-category="all" onclick="filterCategory('all')">全部</button>
+            <button class="category-tab" data-category="revenue" onclick="filterCategory('revenue')">收益管理</button>
+            <button class="category-tab" data-category="service" onclick="filterCategory('service')">客户服务</button>
+            <button class="category-tab" data-category="cost" onclick="filterCategory('cost')">成本控制</button>
+            <button class="category-tab" data-category="staff" onclick="filterCategory('staff')">员工管理</button>
+            <button class="category-tab" data-category="marketing" onclick="filterCategory('marketing')">营销推广</button>
+        </div>
+
+        <div class="popular-questions">
+            <div class="hot-tag">
+                <svg viewBox="0 0 24 24">
+                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/>
+                </svg>
+                热门问题
+            </div>
+            <h2 class="section-title">大家都在问</h2>
+            <div class="faq-list" id="popularList">
+                <!-- Popular questions will be loaded here -->
+            </div>
+        </div>
+
+        <h2 class="section-title">全部问题</h2>
+        <div class="faq-list" id="faqList">
+            <!-- FAQ items will be loaded here -->
+        </div>
+
+        <div class="no-results" id="noResults" style="display: none;">
+            <svg viewBox="0 0 24 24">
+                <path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
+            </svg>
+            <h3>没有找到相关问题</h3>
+            <p>换个关键词试试，或直接咨询AI助手</p>
+        </div>
+    </main>
+
+    <div class="gold-line"></div>
+
+    <nav class="bottom-nav">
+        <button class="nav-item" onclick="window.location.href='home.html'">
+            <svg viewBox="0 0 24 24">
+                <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>
+            </svg>
+            <span>首页</span>
+        </button>
+        <button class="nav-item active" onclick="window.location.href='faq.html'">
+            <svg viewBox="0 0 24 24">
+                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17h-2v-2h2v2zm2.07-7.75l-.9.92C13.45 12.9 13 13.5 13 15h-2v-.5c0-1.1.45-2.1 1.17-2.83l1.24-1.26c.37-.36.59-.86.59-1.41 0-1.1-.9-2-2-2s-2 .9-2 2H8c0-2.21 1.79-4 4-4s4 1.79 4 4c0 .88-.36 1.68-.93 2.25z"/>
+            </svg>
+            <span>常见问题</span>
+        </button>
+        <button class="nav-item" onclick="window.location.href='profile.html'">
+            <svg viewBox="0 0 24 24">
+                <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+            </svg>
+            <span>我的</span>
+        </button>
+    </nav>
+
+    <script>
+        const faqData = [
+            {
+                id: 1,
+                category: 'revenue',
+                question: '如何提高酒店的入住率？',
+                answer: `<p><strong>提高入住率的有效方法：</strong></p>
+                <ol>
+                    <li><strong>动态定价策略</strong>：根据季节、节假日、预订周期等因素灵活调整价格，平季适当降价吸引客户。</li>
+                    <li><strong>优化OTA渠道</strong>：在携程、美团等主流平台维护好评，提高曝光率，积极参与平台活动。</li>
+                    <li><strong>开发长住客户</strong>：推出周租、月租套餐，吸引商务长住客和外地游客。</li>
+                    <li><strong>会员体系建设</strong>：建立会员等级制度，提供差异化服务和优惠，提高复购率。</li>
+                    <li><strong>社交媒体营销</strong>：在小红书、抖音等平台分享酒店特色，吸引年轻客户群体。</li>
+                </ol>
+                <p>根据行业数据，实施以上策略可使入住率提升<strong>15-25%</strong>。</p>`,
+                popular: true
+            },
+            {
+                id: 2,
+                category: 'service',
+                question: '如何降低客户投诉率？',
+                answer: `<p><strong>降低投诉率的关键措施：</strong></p>
+                <ol>
+                    <li><strong>加强员工培训</strong>：定期开展服务礼仪、应急处理培训，提高员工服务意识和专业能力。</li>
+                    <li><strong>建立预警机制</strong>：在入住时提前了解客户需求，主动提供帮助，将问题解决在萌芽状态。</li>
+                    <li><strong>快速响应投诉</strong>：设立24小时投诉热线，确保在30分钟内响应客户诉求。</li>
+                    <li><strong>定期收集反馈</strong>：通过问卷调查、回访等方式了解客户满意度，及时发现问题。</li>
+                    <li><strong>优化硬件设施</strong>：定期检查房间设备，确保空调、热水、网络等设施正常运行。</li>
+                </ol>
+                <p>优秀酒店的投诉率通常控制在<strong>1%以下</strong>。</p>`,
+                popular: true
+            },
+            {
+                id: 3,
+                category: 'cost',
+                question: '如何有效控制运营成本？',
+                answer: `<p><strong>运营成本控制策略：</strong></p>
+                <ol>
+                    <li><strong>能源管理</strong>：安装智能温控系统，根据入住情况调节空调温度，预计可节能<strong>15-20%</strong>。</li>
+                    <li><strong>人员优化</strong>：根据入住率调整员工排班，平季合理控制用工数量。</li>
+                    <li><strong>采购管理</strong>：与供应商建立长期合作关系，批量采购降低成本；定期比价，选择性价比高的供应商。</li>
+                    <li><strong>减少浪费</strong>：严格控制易耗品发放，推广环保用品，减少一次性用品使用。</li>
+                    <li><strong>维护保养</strong>：定期维护设备，延长使用寿命，避免大额维修费用。</li>
+                </ol>`,
+                popular: false
+            },
+            {
+                id: 4,
+                category: 'staff',
+                question: '如何提高员工的工作积极性？',
+                answer: `<p><strong>提升员工积极性的方法：</strong></p>
+                <ol>
+                    <li><strong>合理的薪酬体系</strong>：建立基本工资+绩效奖金+提成制度，多劳多得。</li>
+                    <li><strong>职业发展通道</strong>：为员工制定晋升计划，提供培训和学习机会。</li>
+                    <li><strong>改善工作环境</strong>：营造良好的团队氛围，定期组织团建活动。</li>
+                    <li><strong>激励机制</strong>：设立月度优秀员工、服务之星等评选，给予精神和物质奖励。</li>
+                    <li><strong>关心员工生活</strong>：提供住宿、餐饮等福利，帮助解决实际困难。</li>
+                </ol>
+                <p>满意的员工才能创造满意的客户，员工流失率应控制在<strong>20%以下</strong>。</p>`,
+                popular: false
+            },
+            {
+                id: 5,
+                category: 'marketing',
+                question: '如何打造酒店的差异化竞争优势？',
+                answer: `<p><strong>打造差异化优势的策略：</strong></p>
+                <ol>
+                    <li><strong>主题特色</strong>：打造独特的装修风格或主题（如亲子主题、商务主题、文化主题）。</li>
+                    <li><strong>服务创新</strong>：提供差异化服务，如24小时管家服务、特色早餐、接送机服务等。</li>
+                    <li><strong>文化融合</strong>：融入当地文化元素，举办文化活动，增强客户体验。</li>
+                    <li><strong>科技应用</strong>：引入智能入住、语音控制等科技元素，提升便捷性。</li>
+                    <li><strong>社区联动</strong>：与周边景点、餐厅、商场合作，为客户提供一站式体验。</li>
+                </ol>`,
+                popular: true
+            },
+            {
+                id: 6,
+                category: 'revenue',
+                question: '如何提高客房间夜收益（RevPAR）？',
+                answer: `<p><strong>提升RevPAR的有效途径：</strong></p>
+                <ol>
+                    <li><strong>平衡入住率与平均房价</strong>：在保持合理入住率的同时，逐步提高平均房价。</li>
+                    <li><strong>开发高价值客户</strong>：针对商务客、高端度假客推出高端房型和服务套餐。</li>
+                    <li><strong>优化房型结构</strong>：根据市场需求调整各房型比例，增加高收益房型数量。</li>
+                    <li><strong>动态定价</strong>：根据需求变化实时调整房价，实现收益最大化。</li>
+                    <li><strong>交叉销售</strong>：在入住时推荐附加服务（如早餐、增值服务），增加单客收益。</li>
+                </ol>
+                <p>行业优秀酒店的RevPAR通常高于市场平均<strong>20-30%</strong>。</p>`,
+                popular: false
+            },
+            {
+                id: 7,
+                category: 'service',
+                question: '如何提升客户忠诚度？',
+                answer: `<p><strong>提升客户忠诚度的策略：</strong></p>
+                <ol>
+                    <li><strong>会员体系</strong>：建立完善的会员等级制度，提供专属权益和优惠。</li>
+                    <li><strong>个性化服务</strong>：记录客户偏好，提供定制化服务（如喜欢的房型、楼层、枕头类型）。</li>
+                    <li><strong>节日关怀</strong>：在客户生日、节日发送祝福和优惠信息。</li>
+                    <li><strong>积分奖励</strong>：通过积分兑换、折扣券等方式激励复购。</li>
+                    <li><strong>客户关怀</strong>：入住前后主动联系，收集反馈，持续改进服务。</li>
+                </ol>
+                <p>忠诚客户的复购率是新客户的<strong>3-5倍</strong>，营销成本仅为新客户的<strong>1/5</strong>。</p>`,
+                popular: false
+            },
+            {
+                id: 8,
+                category: 'cost',
+                question: '如何有效管理酒店的水电成本？',
+                answer: `<p><strong>水电成本管理技巧：</strong></p>
+                <ol>
+                    <li><strong>智能控制系统</strong>：安装房间智能控制系统，客人离开时自动关闭空调、灯光。</li>
+                    <li><strong>LED照明</strong>：全面使用LED节能灯具，可节能<strong>50%以上</strong>。</li>
+                    <li><strong>变频设备</strong>：使用变频空调、水泵等设备，根据需求自动调节。</li>
+                    <li><strong>节水器具</strong>：安装节水龙头、节水马桶，减少水资源浪费。</li>
+                    <li><strong>定期维护</strong>：定期检查管道、线路，避免漏水漏电造成的损失。</li>
+                </ol>`,
+                popular: false
+            },
+            {
+                id: 9,
+                category: 'marketing',
+                question: '如何利用新媒体进行酒店营销？',
+                answer: `<p><strong>新媒体营销策略：</strong></p>
+                <ol>
+                    <li><strong>小红书</strong>：发布精美图文，分享酒店特色、周边景点、美食推荐。</li>
+                    <li><strong>抖音</strong>：拍摄短视频，展示酒店环境、服务细节、客户体验。</li>
+                    <li><strong>微信公众号</strong>：定期推送优惠活动、酒店资讯，维护客户关系。</li>
+                    <li><strong>直播带货</strong>：通过直播展示酒店，推出限时优惠套餐。</li>
+                    <li><strong>KOL合作</strong>：与旅游博主、网红合作，扩大品牌影响力。</li>
+                </ol>
+                <p>新媒体营销已成为酒店获取客源的重要渠道，投入产出比可达<strong>1:5-1:10</strong>。</p>`,
+                popular: false
+            },
+            {
+                id: 10,
+                category: 'staff',
+                question: '如何有效降低员工流失率？',
+                answer: `<p><strong>降低员工流失率的措施：</strong></p>
+                <ol>
+                    <li><strong>公平公正的管理</strong>：建立透明的晋升机制，让员工看到发展前景。</li>
+                    <li><strong>合理的薪酬待遇</strong>：提供有竞争力的薪资和福利，定期调整。</li>
+                    <li><strong>良好的工作氛围</strong>：营造尊重、包容的团队文化，减少内部矛盾。</li>
+                    <li><strong>培训与发展</strong>：提供技能培训和职业规划，帮助员工成长。</li>
+                    <li><strong>员工关怀</strong>：关注员工身心健康，提供必要的支持和帮助。</li>
+                </ol>
+                <p>员工流失率应控制在<strong>20%以下</strong>，优秀酒店的流失率通常在<strong>10%左右</strong>。</p>`,
+                popular: false
+            }
+        ];
+
+        let currentCategory = 'all';
+        let searchTerm = '';
+
+        function renderFAQs() {
+            const faqList = document.getElementById('faqList');
+            const popularList = document.getElementById('popularList');
+            const noResults = document.getElementById('noResults');
+
+            let filteredFAQs = faqData.filter(faq => {
+                const matchCategory = currentCategory === 'all' || faq.category === currentCategory;
+                const matchSearch = searchTerm === '' || 
+                    faq.question.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                    faq.answer.toLowerCase().includes(searchTerm.toLowerCase());
+                return matchCategory && matchSearch;
+            });
+
+            const popularFAQs = faqData.filter(faq => faq.popular && 
+                (searchTerm === '' || 
+                faq.question.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                faq.answer.toLowerCase().includes(searchTerm.toLowerCase())));
+
+            if (filteredFAQs.length === 0) {
+                faqList.innerHTML = '';
+                popularList.innerHTML = '';
+                noResults.style.display = 'block';
+                document.querySelector('.popular-questions').style.display = 'none';
+                return;
+            }
+
+            noResults.style.display = 'none';
+            document.querySelector('.popular-questions').style.display = 'block';
+
+            // Render popular questions
+            popularList.innerHTML = popularFAQs.map(faq => `
+                <div class="faq-item" data-id="${faq.id}">
+                    <div class="faq-question" onclick="toggleFAQ(${faq.id})">
+                        <div class="question-content">${faq.question}</div>
+                        <div class="expand-icon">
+                            <svg viewBox="0 0 24 24">
+                                <path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z"/>
+                            </svg>
+                        </div>
+                    </div>
+                    <div class="faq-answer">
+                        <div class="answer-content">
+                            <div class="ai-badge">
+                                <svg viewBox="0 0 24 24">
+                                    <path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 14H6l-2 2V4h16v12z"/>
+                                </svg>
+                                AI智能解答
+                            </div>
+                            <div class="answer-text">${faq.answer}</div>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+
+            // Render all FAQs
+            faqList.innerHTML = filteredFAQs.map(faq => `
+                <div class="faq-item" data-id="${faq.id}">
+                    <div class="faq-question" onclick="toggleFAQ(${faq.id})">
+                        <div class="question-content">${faq.question}</div>
+                        <div class="expand-icon">
+                            <svg viewBox="0 0 24 24">
+                                <path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z"/>
+                            </svg>
+                        </div>
+                    </div>
+                    <div class="faq-answer">
+                        <div class="answer-content">
+                            <div class="ai-badge">
+                                <svg viewBox="0 0 24 24">
+                                    <path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 14H6l-2 2V4h16v12z"/>
+                                </svg>
+                                AI智能解答
+                            </div>
+                            <div class="answer-text">${faq.answer}</div>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function toggleFAQ(id) {
+            const faqItems = document.querySelectorAll('.faq-item');
+            faqItems.forEach(item => {
+                if (parseInt(item.dataset.id) === id) {
+                    item.classList.toggle('expanded');
+                }
+            });
+        }
+
+        function filterCategory(category) {
+            currentCategory = category;
+            
+            // Update active tab
+            document.querySelectorAll('.category-tab').forEach(tab => {
+                tab.classList.remove('active');
+                if (tab.dataset.category === category) {
+                    tab.classList.add('active');
+                }
+            });
+
+            renderFAQs();
+        }
+
+        function handleSearch() {
+            searchTerm = document.getElementById('searchInput').value;
+            renderFAQs();
+        }
+
+        // Initial render
+        renderFAQs();
+    </script>
+</body>
+</html>
