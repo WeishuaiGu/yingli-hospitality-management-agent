@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>首页 - 智酒店管家</title>
+    <title>首页 - 迎鲤酒店智能助手</title>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Source+Sans+Pro:wght@300;400;600&display=swap" rel="stylesheet">
     <style>
         * {
@@ -162,6 +162,94 @@
         .message.user .message-bubble {
             background: linear-gradient(135deg, var(--primary-blue) 0%, #2c5282 100%);
             color: var(--white);
+        }
+
+        .ai-message {
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+        }
+
+        .ai-message h1,
+        .ai-message h2,
+        .ai-message h3 {
+            color: var(--primary-blue);
+            margin: 12px 0 8px;
+            font-weight: 600;
+            line-height: 1.4;
+        }
+
+        .ai-message h1 {
+            font-size: 18px;
+            margin-top: 16px;
+        }
+
+        .ai-message h2 {
+            font-size: 16px;
+        }
+
+        .ai-message h3 {
+            font-size: 15px;
+        }
+
+        .ai-message p {
+            margin: 8px 0;
+            line-height: 1.7;
+        }
+
+        .ai-message strong {
+            color: var(--primary-blue);
+            font-weight: 600;
+        }
+
+        .ai-message em {
+            font-style: italic;
+            color: var(--text-dark);
+        }
+
+        .ai-message ul,
+        .ai-message ol {
+            margin: 8px 0;
+            padding-left: 20px;
+        }
+
+        .ai-message li {
+            margin: 4px 0;
+            line-height: 1.6;
+        }
+
+        .ai-message ul li::marker {
+            color: var(--accent-gold);
+        }
+
+        .ai-message ol li::marker {
+            color: var(--primary-blue);
+            font-weight: 600;
+        }
+
+        .ai-message code.inline-code {
+            background: var(--bg-light);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 13px;
+            font-family: 'Courier New', monospace;
+            color: var(--primary-blue);
+            border: 1px solid var(--border-color);
+        }
+
+        .ai-message pre {
+            background: var(--bg-light);
+            padding: 12px;
+            border-radius: 8px;
+            margin: 10px 0;
+            overflow-x: auto;
+            border: 1px solid var(--border-color);
+        }
+
+        .ai-message pre code {
+            font-size: 13px;
+            font-family: 'Courier New', monospace;
+            line-height: 1.5;
+            color: var(--text-dark);
         }
 
         .message-time {
@@ -473,7 +561,7 @@
 </head>
 <body>
     <header class="header">
-        <div class="logo">智酒店管家</div>
+        <div class="logo">迎鲤酒店智能助手</div>
         <div class="header-actions">
             <button class="header-btn" onclick="window.location.href='faq.html'">
                 <svg viewBox="0 0 24 24" fill="currentColor">
@@ -497,7 +585,7 @@
                     <path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 14H6l-2 2V4h16v12z"/>
                 </svg>
             </div>
-            <h1 class="welcome-title">欢迎使用智酒店管家</h1>
+            <h1 class="welcome-title">欢迎使用迎鲤酒店智能助手</h1>
             <p class="welcome-subtitle">我是您的智能经营助手，随时为您提供专业的酒店管理建议和解决方案</p>
         </div>
 
@@ -608,7 +696,7 @@
             sendMessage();
         }
 
-        function sendMessage() {
+        async function sendMessage() {
             const message = messageInput.value.trim();
             if (!message) return;
 
@@ -619,11 +707,14 @@
 
             showTypingIndicator();
 
-            setTimeout(() => {
+            try {
+                const aiResponse = await callZhipuAI(message);
                 hideTypingIndicator();
-                const aiResponse = generateAIResponse(message);
                 addAIMessage(aiResponse);
-            }, 1500);
+            } catch (error) {
+                hideTypingIndicator();
+                addAIMessage('抱歉，我遇到了一些问题，请稍后再试。错误信息：' + error.message);
+            }
         }
 
         function addUserMessage(message) {
@@ -654,7 +745,7 @@
                     </svg>
                 </div>
                 <div class="message-content">
-                    <div class="message-bubble">${message}</div>
+                    <div class="message-bubble ai-message">${parseMarkdown(message)}</div>
                     <div class="message-time">${getCurrentTime()}</div>
                 </div>
             `;
@@ -691,21 +782,78 @@
             }
         }
 
-        function generateAIResponse(message) {
-            const responses = {
-                '收益分析': '根据您酒店的经营数据，本月收益较上月增长了12%，主要得益于入住率的提升。建议您继续关注周末时段的定价策略，适当调整可进一步提高收益。',
-                '满意度提升': '提高客户满意度的关键在于：1.优化前台服务流程，减少客人等待时间；2.定期培训员工服务意识；3.关注客户反馈并及时改进。数据显示，服务响应速度提升30%可使满意度提高15%。',
-                '成本控制': '建议从以下几个方面控制成本：1.优化能源使用，采用智能温控系统可节能15-20%；2.合理控制员工排班，避免人员浪费；3.与供应商建立长期合作关系，降低采购成本。',
-                '评价分析': '最近一个月的顾客评价中，正面评价占78%，主要表扬了房间清洁和服务态度。负面评价主要集中在早餐品种和电梯等待时间上，建议增加早餐选项并优化电梯调度。'
-            };
+        async function callZhipuAI(message) {
+            const apiKey = '4b494336b3bb4d64b413505c720f1de0.QWnKG9uy2rFjYDyV';
+            const url = 'https://open.bigmodel.cn/api/paas/v4/chat/completions';
 
-            for (const [key, value] of Object.entries(responses)) {
-                if (message.includes(key)) {
-                    return value;
-                }
+            const systemPrompt = `你是一个专业的酒店管理智能助手，名为"迎鲤酒店智能助手"。你的职责是：
+1. 提供专业的酒店经营管理建议
+2. 分析酒店行业问题并给出解决方案
+3. 帮助用户提高酒店的运营效率和收益
+4. 回答关于酒店行业的各种问题
+5. 用专业、友好、简洁的语言回答
+6. 回答时结合酒店行业最佳实践和数据
+7. 如果用户的问题不够具体，可以主动询问更多细节以便给出更准确的建议`;
+
+            const response = await fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${apiKey}`
+                },
+                body: JSON.stringify({
+                    model: 'glm-4',
+                    messages: [
+                        {
+                            role: 'system',
+                            content: systemPrompt
+                        },
+                        {
+                            role: 'user',
+                            content: message
+                        }
+                    ],
+                    temperature: 0.7,
+                    max_tokens: 2000
+                })
+            });
+
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.error?.message || `API请求失败: ${response.status}`);
             }
 
-            return '感谢您的提问！我会根据您酒店的具体情况，为您分析并提供专业的经营建议。如需更详细的分析，建议您提供相关的经营数据。';
+            const data = await response.json();
+            return data.choices[0].message.content;
+        }
+
+        function parseMarkdown(text) {
+            if (!text) return '';
+            
+            let html = escapeHtml(text);
+            
+            html = html.replace(/^### (.*$)/gim, '<h3>$1</h3>');
+            html = html.replace(/^## (.*$)/gim, '<h2>$1</h2>');
+            html = html.replace(/^# (.*$)/gim, '<h1>$1</h1>');
+            
+            html = html.replace(/\*\*(.*?)\*\*/gim, '<strong>$1</strong>');
+            html = html.replace(/\*(.*?)\*/gim, '<em>$1</em>');
+            
+            html = html.replace(/^\d+\. (.*$)/gim, '<ol><li>$1</li></ol>');
+            html = html.replace(/^- (.*$)/gim, '<ul><li>$1</li></ul>');
+            
+            html = html.replace(/<\/ol>\s*<ol>/gim, '');
+            html = html.replace(/<\/ul>\s*<ul>/gim, '');
+            
+            html = html.replace(/`([^`]+)`/gim, '<code class="inline-code">$1</code>');
+            html = html.replace(/```([\s\S]*?)```/gim, '<pre><code>$1</code></pre>');
+            
+            html = html.replace(/\n\n/gim, '</p><p>');
+            html = html.replace(/\n/gim, '<br>');
+            
+            html = '<p>' + html + '</p>';
+            
+            return html;
         }
 
         function escapeHtml(text) {
