@@ -1,0 +1,934 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>员工管理 - 迎鲤酒店智能助手</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Source+Sans+Pro:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-blue: #1a365d;
+            --accent-gold: #d4af37;
+            --white: #ffffff;
+            --text-dark: #2d3748;
+            --text-light: #718096;
+            --bg-light: #f7fafc;
+            --border-color: #e2e8f0;
+            --shadow-subtle: 0 2px 8px rgba(0, 0, 0, 0.08);
+            --shadow-medium: 0 4px 12px rgba(0, 0, 0, 0.1);
+            --shadow-gold: 0 4px 20px rgba(212, 175, 55, 0.15);
+        }
+
+        body {
+            font-family: 'Source Sans Pro', sans-serif;
+            background: var(--bg-light);
+            min-height: 100vh;
+            padding-bottom: 80px;
+        }
+
+        .header {
+            background: linear-gradient(135deg, var(--primary-blue) 0%, #2c5282 100%);
+            padding: 20px;
+            position: relative;
+            box-shadow: var(--shadow-medium);
+        }
+
+        .header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, var(--accent-gold), transparent);
+        }
+
+        .header-content {
+            max-width: 600px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .back-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        .back-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateX(-3px);
+        }
+
+        .back-btn svg {
+            width: 24px;
+            height: 24px;
+            fill: var(--white);
+        }
+
+        .page-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--white);
+            letter-spacing: 0.5px;
+        }
+
+        .add-btn-header {
+            padding: 10px 20px;
+            background: linear-gradient(135deg, var(--accent-gold) 0%, #ecc94b 100%);
+            color: var(--white);
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .add-btn-header:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-gold);
+        }
+
+        .add-btn-header svg {
+            width: 18px;
+            height: 18px;
+        }
+
+        .main-container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .filter-bar {
+            background: var(--white);
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 20px;
+            box-shadow: var(--shadow-subtle);
+            display: flex;
+            gap: 12px;
+            animation: slideUp 0.5s ease-out backwards;
+        }
+
+        .search-input {
+            flex: 1;
+            padding: 12px 16px;
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 14px;
+            font-family: 'Source Sans Pro', sans-serif;
+            transition: all 0.3s ease;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: var(--accent-gold);
+            box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.1);
+        }
+
+        .filter-select {
+            padding: 12px 16px;
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 14px;
+            font-family: 'Source Sans Pro', sans-serif;
+            background: var(--white);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .filter-select:focus {
+            outline: none;
+            border-color: var(--accent-gold);
+        }
+
+        .staff-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .staff-card {
+            background: var(--white);
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: var(--shadow-subtle);
+            animation: slideUp 0.5s ease-out backwards;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .staff-card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-medium);
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .staff-card:nth-child(1) {
+            animation-delay: 0.1s;
+        }
+
+        .staff-card:nth-child(2) {
+            animation-delay: 0.15s;
+        }
+
+        .staff-card:nth-child(3) {
+            animation-delay: 0.2s;
+        }
+
+        .staff-card:nth-child(4) {
+            animation-delay: 0.25s;
+        }
+
+        .staff-card:nth-child(5) {
+            animation-delay: 0.3s;
+        }
+
+        .staff-header {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 16px;
+        }
+
+        .staff-avatar {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, var(--accent-gold) 0%, #ecc94b 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--white);
+            font-size: 24px;
+            font-weight: 700;
+            box-shadow: var(--shadow-gold);
+        }
+
+        .staff-info {
+            flex: 1;
+        }
+
+        .staff-name {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--text-dark);
+            margin-bottom: 4px;
+        }
+
+        .staff-dept {
+            font-size: 14px;
+            color: var(--text-light);
+        }
+
+        .staff-details {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-bottom: 16px;
+            padding: 16px;
+            background: var(--bg-light);
+            border-radius: 8px;
+        }
+
+        .detail-item {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .detail-label {
+            font-size: 12px;
+            color: var(--text-light);
+        }
+
+        .detail-value {
+            font-size: 14px;
+            color: var(--text-dark);
+            font-weight: 500;
+        }
+
+        .staff-status {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .status-active {
+            background: rgba(56, 161, 105, 0.1);
+            color: #38a169;
+        }
+
+        .status-resigned {
+            background: rgba(229, 62, 62, 0.1);
+            color: #e53e3e;
+        }
+
+        .status-probation {
+            background: rgba(212, 175, 55, 0.1);
+            color: var(--accent-gold);
+        }
+
+        .staff-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .action-btn {
+            flex: 1;
+            padding: 10px;
+            border-radius: 8px;
+            border: none;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+
+        .view-btn {
+            background: var(--primary-blue);
+            color: var(--white);
+        }
+
+        .view-btn:hover {
+            background: #2c5282;
+        }
+
+        .edit-btn {
+            background: var(--white);
+            color: var(--text-dark);
+            border: 2px solid var(--border-color);
+        }
+
+        .edit-btn:hover {
+            border-color: var(--accent-gold);
+            color: var(--accent-gold);
+        }
+
+        .delete-btn {
+            background: var(--white);
+            color: #e53e3e;
+            border: 2px solid #e53e3e;
+        }
+
+        .delete-btn:hover {
+            background: #e53e3e;
+            color: var(--white);
+        }
+
+        .load-more {
+            text-align: center;
+            padding: 20px;
+            color: var(--text-light);
+            font-size: 14px;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: var(--white);
+            border-radius: 20px;
+            max-width: 500px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            animation: modalSlide 0.3s ease-out;
+        }
+
+        @keyframes modalSlide {
+            from {
+                opacity: 0;
+                transform: scale(0.9);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        .modal-header {
+            padding: 20px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .modal-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 20px;
+            color: var(--primary-blue);
+            font-weight: 600;
+        }
+
+        .modal-close {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            border: none;
+            background: var(--bg-light);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .modal-close:hover {
+            background: var(--border-color);
+        }
+
+        .modal-close svg {
+            width: 20px;
+            height: 20px;
+            fill: var(--text-light);
+        }
+
+        .modal-body {
+            padding: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-dark);
+            margin-bottom: 8px;
+        }
+
+        .form-group label .required {
+            color: #e53e3e;
+            margin-left: 4px;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 14px;
+            font-family: 'Source Sans Pro', sans-serif;
+            transition: all 0.3s ease;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--accent-gold);
+            box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.1);
+        }
+
+        .modal-footer {
+            padding: 20px;
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            gap: 12px;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 12px;
+            border-radius: 8px;
+            border: none;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'Source Sans Pro', sans-serif;
+        }
+
+        .btn-cancel {
+            background: var(--bg-light);
+            color: var(--text-dark);
+        }
+
+        .btn-cancel:hover {
+            background: var(--border-color);
+        }
+
+        .btn-confirm {
+            background: linear-gradient(135deg, var(--primary-blue) 0%, #2c5282 100%);
+            color: var(--white);
+        }
+
+        .btn-confirm:hover {
+            transform: translateY(-1px);
+            box-shadow: var(--shadow-medium);
+        }
+
+        .toast {
+            position: fixed;
+            top: 100px;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 16px 24px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            z-index: 1000;
+            animation: toastSlide 0.3s ease-out;
+        }
+
+        @keyframes toastSlide {
+            from {
+                opacity: 0;
+                transform: translateX(-50%) translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(-50%) translateY(0);
+            }
+        }
+
+        .toast.success {
+            background: #38a169;
+            color: var(--white);
+            box-shadow: 0 4px 12px rgba(56, 161, 105, 0.3);
+        }
+
+        .toast.error {
+            background: #e53e3e;
+            color: var(--white);
+            box-shadow: 0 4px 12px rgba(229, 62, 62, 0.3);
+        }
+
+        .toast-icon {
+            width: 20px;
+            height: 20px;
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="header-content">
+            <div class="header-left">
+                <button class="back-btn" onclick="goBack()">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/>
+                    </svg>
+                </button>
+                <h1 class="page-title">员工管理</h1>
+            </div>
+            <button class="add-btn-header" onclick="openAddModal()">
+                <svg viewBox="0 0 24 24">
+                    <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/>
+                </svg>
+                新增
+            </button>
+        </div>
+    </header>
+
+    <main class="main-container">
+        <div class="filter-bar">
+            <input type="text" class="search-input" placeholder="搜索员工姓名、工号..." id="searchInput">
+            <select class="filter-select" id="deptFilter">
+                <option value="">全部部门</option>
+                <option value="前台部">前台部</option>
+                <option value="客房部">客房部</option>
+                <option value="餐饮部">餐饮部</option>
+                <option value="安保部">安保部</option>
+                <option value="财务部">财务部</option>
+            </select>
+            <select class="filter-select" id="statusFilter">
+                <option value="">全部状态</option>
+                <option value="active">在职</option>
+                <option value="probation">试用期</option>
+                <option value="resigned">离职</option>
+            </select>
+        </div>
+
+        <div class="staff-list" id="staffList">
+            <div class="staff-card" onclick="viewStaffDetail('staff_001')">
+                <div class="staff-header">
+                    <div class="staff-avatar">张</div>
+                    <div class="staff-info">
+                        <div class="staff-name">张三</div>
+                        <div class="staff-dept">前台部 · 前台服务员</div>
+                    </div>
+                    <span class="staff-status status-active">在职</span>
+                </div>
+                <div class="staff-details">
+                    <div class="detail-item">
+                        <span class="detail-label">工号</span>
+                        <span class="detail-value">ST001</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">手机</span>
+                        <span class="detail-value">138****8888</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">入职日期</span>
+                        <span class="detail-value">2024-01-15</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">绩效评分</span>
+                        <span class="detail-value">95分</span>
+                    </div>
+                </div>
+                <div class="staff-actions">
+                    <button class="action-btn view-btn" onclick="event.stopPropagation(); viewStaffDetail('staff_001')">
+                        <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
+                            <path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/>
+                        </svg>
+                        详情
+                    </button>
+                    <button class="action-btn edit-btn" onclick="event.stopPropagation(); editStaff('staff_001')">
+                        <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
+                            <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/>
+                        </svg>
+                        编辑
+                    </button>
+                    <button class="action-btn delete-btn" onclick="event.stopPropagation(); deleteStaff('staff_001')">
+                        <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
+                            <path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/>
+                        </svg>
+                        删除
+                    </button>
+                </div>
+            </div>
+
+            <div class="staff-card" onclick="viewStaffDetail('staff_002')">
+                <div class="staff-header">
+                    <div class="staff-avatar">李</div>
+                    <div class="staff-info">
+                        <div class="staff-name">李四</div>
+                        <div class="staff-dept">客房部 · 客房主管</div>
+                    </div>
+                    <span class="staff-status status-active">在职</span>
+                </div>
+                <div class="staff-details">
+                    <div class="detail-item">
+                        <span class="detail-label">工号</span>
+                        <span class="detail-value">ST002</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">手机</span>
+                        <span class="detail-value">139****9999</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">入职日期</span>
+                        <span class="detail-value">2023-06-20</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">绩效评分</span>
+                        <span class="detail-value">92分</span>
+                    </div>
+                </div>
+                <div class="staff-actions">
+                    <button class="action-btn view-btn" onclick="event.stopPropagation(); viewStaffDetail('staff_002')">
+                        <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
+                            <path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/>
+                        </svg>
+                        详情
+                    </button>
+                    <button class="action-btn edit-btn" onclick="event.stopPropagation(); editStaff('staff_002')">
+                        <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
+                            <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/>
+                        </svg>
+                        编辑
+                    </button>
+                    <button class="action-btn delete-btn" onclick="event.stopPropagation(); deleteStaff('staff_002')">
+                        <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
+                            <path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/>
+                        </svg>
+                        删除
+                    </button>
+                </div>
+            </div>
+
+            <div class="staff-card" onclick="viewStaffDetail('staff_003')">
+                <div class="staff-header">
+                    <div class="staff-avatar">王</div>
+                    <div class="staff-info">
+                        <div class="staff-name">王五</div>
+                        <div class="staff-dept">餐饮部 · 厨师长</div>
+                    </div>
+                    <span class="staff-status status-probation">试用期</span>
+                </div>
+                <div class="staff-details">
+                    <div class="detail-item">
+                        <span class="detail-label">工号</span>
+                        <span class="detail-value">ST003</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">手机</span>
+                        <span class="detail-value">137****7777</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">入职日期</span>
+                        <span class="detail-value">2024-04-01</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">绩效评分</span>
+                        <span class="detail-value">88分</span>
+                    </div>
+                </div>
+                <div class="staff-actions">
+                    <button class="action-btn view-btn" onclick="event.stopPropagation(); viewStaffDetail('staff_003')">
+                        <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
+                            <path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/>
+                        </svg>
+                        详情
+                    </button>
+                    <button class="action-btn edit-btn" onclick="event.stopPropagation(); editStaff('staff_003')">
+                        <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
+                            <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/>
+                        </svg>
+                        编辑
+                    </button>
+                    <button class="action-btn delete-btn" onclick="event.stopPropagation(); deleteStaff('staff_003')">
+                        <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
+                            <path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/>
+                        </svg>
+                        删除
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="load-more">
+            暂无更多数据
+        </div>
+    </main>
+
+    <div class="modal" id="addModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">新增员工</h3>
+                <button class="modal-close" onclick="closeModal('addModal')">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
+                    </svg>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label>姓名<span class="required">*</span></label>
+                    <input type="text" class="form-input" id="newStaffName" placeholder="请输入员工姓名">
+                </div>
+                <div class="form-group">
+                    <label>手机号<span class="required">*</span></label>
+                    <input type="tel" class="form-input" id="newStaffPhone" placeholder="请输入手机号">
+                </div>
+                <div class="form-group">
+                    <label>部门<span class="required">*</span></label>
+                    <select class="form-input" id="newStaffDept">
+                        <option value="">请选择部门</option>
+                        <option value="前台部">前台部</option>
+                        <option value="客房部">客房部</option>
+                        <option value="餐饮部">餐饮部</option>
+                        <option value="安保部">安保部</option>
+                        <option value="财务部">财务部</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>职位<span class="required">*</span></label>
+                    <input type="text" class="form-input" id="newStaffPosition" placeholder="请输入职位">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-cancel" onclick="closeModal('addModal')">取消</button>
+                <button class="btn btn-confirm" onclick="addStaff()">确认添加</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const STORAGE_KEY = 'yingli_staff_list';
+        const demoStaff = [
+            {
+                id: 'staff_001',
+                name: '张三',
+                phone: '13800138000',
+                dept: '前台部',
+                position: '前台服务员',
+                employeeId: 'ST001',
+                joinDate: '2024-01-15',
+                status: 'active',
+                score: 95
+            },
+            {
+                id: 'staff_002',
+                name: '李四',
+                phone: '13900139000',
+                dept: '客房部',
+                position: '客房主管',
+                employeeId: 'ST002',
+                joinDate: '2023-06-20',
+                status: 'active',
+                score: 92
+            },
+            {
+                id: 'staff_003',
+                name: '王五',
+                phone: '13700137000',
+                dept: '餐饮部',
+                position: '厨师长',
+                employeeId: 'ST003',
+                joinDate: '2024-04-01',
+                status: 'probation',
+                score: 88
+            }
+        ];
+
+        function goBack() {
+            window.location.href = 'profile.html';
+        }
+
+        function openAddModal() {
+            document.getElementById('addModal').classList.add('active');
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.remove('active');
+        }
+
+        function addStaff() {
+            const name = document.getElementById('newStaffName').value;
+            const phone = document.getElementById('newStaffPhone').value;
+            const dept = document.getElementById('newStaffDept').value;
+            const position = document.getElementById('newStaffPosition').value;
+
+            if (!name || !phone || !dept || !position) {
+                showToast('请填写完整信息', 'error');
+                return;
+            }
+
+            const newStaff = {
+                id: 'staff_' + Date.now(),
+                name,
+                phone,
+                dept,
+                position,
+                employeeId: 'ST' + String(demoStaff.length + 1).padStart(3, '0'),
+                joinDate: new Date().toISOString().split('T')[0],
+                status: 'probation',
+                score: 0
+            };
+
+            demoStaff.unshift(newStaff);
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(demoStaff));
+
+            closeModal('addModal');
+            showToast('添加成功', 'success');
+            
+            setTimeout(() => {
+                location.reload();
+            }, 1500);
+        }
+
+        function viewStaffDetail(id) {
+            alert(`查看员工 ${id} 的详细信息（demo阶段，暂未实现）`);
+        }
+
+        function editStaff(id) {
+            alert(`编辑员工 ${id}（demo阶段，暂未实现）`);
+        }
+
+        function deleteStaff(id) {
+            if (confirm('确定要删除该员工吗？')) {
+                const index = demoStaff.findIndex(s => s.id === id);
+                if (index > -1) {
+                    demoStaff.splice(index, 1);
+                    localStorage.setItem(STORAGE_KEY, JSON.stringify(demoStaff));
+                    showToast('删除成功', 'success');
+                    setTimeout(() => {
+                        location.reload();
+                    }, 1500);
+                }
+            }
+        }
+
+        function showToast(message, type = 'success') {
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            
+            const icon = type === 'success' 
+                ? '<svg class="toast-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>'
+                : '<svg class="toast-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>';
+            
+            toast.innerHTML = `${icon}<span>${message}</span>`;
+            document.body.appendChild(toast);
+
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+
+        window.addEventListener('load', function() {
+            const savedData = localStorage.getItem(STORAGE_KEY);
+            if (savedData) {
+                const staffList = JSON.parse(savedData);
+                if (staffList.length > 0) {
+                    Object.assign(demoStaff, staffList);
+                }
+            }
+        });
+    </script>
+</body>
+</html>

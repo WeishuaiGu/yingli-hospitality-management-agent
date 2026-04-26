@@ -584,33 +584,31 @@
 
     <script>
         function openModal(type) {
-            let message = '';
             switch(type) {
                 case 'hotelInfo':
-                    message = '酒店信息管理功能即将上线，敬请期待！';
-                    break;
+                    window.location.href = 'hotel-info.html';
+                    return;
                 case 'staff':
-                    message = '员工管理功能即将上线，敬请期待！';
-                    break;
+                    window.location.href = 'staff.html';
+                    return;
                 case 'data':
-                    message = '经营数据功能即将上线，敬请期待！';
-                    break;
+                    window.location.href = 'business-data.html';
+                    return;
                 case 'notifications':
-                    message = '消息通知功能即将上线，敬请期待！';
-                    break;
+                    alert('消息通知功能即将上线，敬请期待！');
+                    return;
                 case 'security':
-                    message = '账户安全功能即将上线，敬请期待！';
-                    break;
+                    window.location.href = 'account-security.html';
+                    return;
                 case 'help':
                     window.location.href = 'faq.html';
                     return;
                 case 'about':
-                    message = '迎鲤酒店智能助手是一款专为酒店经营者打造的智能AI助手，提供专业的经营建议和解决方案。';
-                    break;
+                    alert('迎鲤酒店智能助手是一款专为酒店经营者打造的智能AI助手，提供专业的经营建议和解决方案。');
+                    return;
                 default:
-                    message = '功能即将上线';
+                    alert('功能即将上线');
             }
-            alert(message);
         }
 
         function handleLogout() {

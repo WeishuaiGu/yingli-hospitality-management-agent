@@ -1,0 +1,755 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>酒店信息 - 迎鲤酒店智能助手</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Source+Sans+Pro:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-blue: #1a365d;
+            --accent-gold: #d4af37;
+            --white: #ffffff;
+            --text-dark: #2d3748;
+            --text-light: #718096;
+            --bg-light: #f7fafc;
+            --border-color: #e2e8f0;
+            --shadow-subtle: 0 2px 8px rgba(0, 0, 0, 0.08);
+            --shadow-medium: 0 4px 12px rgba(0, 0, 0, 0.1);
+            --shadow-gold: 0 4px 20px rgba(212, 175, 55, 0.15);
+        }
+
+        body {
+            font-family: 'Source Sans Pro', sans-serif;
+            background: var(--bg-light);
+            min-height: 100vh;
+            padding-bottom: 80px;
+        }
+
+        .header {
+            background: linear-gradient(135deg, var(--primary-blue) 0%, #2c5282 100%);
+            padding: 20px;
+            position: relative;
+            box-shadow: var(--shadow-medium);
+        }
+
+        .header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, var(--accent-gold), transparent);
+        }
+
+        .header-content {
+            max-width: 600px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .back-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        .back-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateX(-3px);
+        }
+
+        .back-btn svg {
+            width: 24px;
+            height: 24px;
+            fill: var(--white);
+        }
+
+        .page-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--white);
+            letter-spacing: 0.5px;
+        }
+
+        .main-container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .section {
+            background: var(--white);
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 20px;
+            box-shadow: var(--shadow-subtle);
+            animation: slideUp 0.5s ease-out backwards;
+        }
+
+        .section:nth-child(1) {
+            animation-delay: 0.1s;
+        }
+
+        .section:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .section:nth-child(3) {
+            animation-delay: 0.3s;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 20px;
+            padding-bottom: 16px;
+            border-bottom: 2px solid var(--bg-light);
+        }
+
+        .section-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, var(--primary-blue) 0%, #2c5282 100%);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .section-icon svg {
+            width: 20px;
+            height: 20px;
+            fill: var(--white);
+        }
+
+        .section-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 18px;
+            color: var(--primary-blue);
+            font-weight: 600;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-dark);
+            margin-bottom: 8px;
+        }
+
+        .form-group label .required {
+            color: #e53e3e;
+            margin-left: 4px;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 14px 16px;
+            border: 2px solid var(--border-color);
+            border-radius: 10px;
+            font-size: 15px;
+            font-family: 'Source Sans Pro', sans-serif;
+            transition: all 0.3s ease;
+            background: var(--white);
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--accent-gold);
+            box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.1);
+        }
+
+        .form-input::placeholder {
+            color: var(--text-light);
+        }
+
+        .form-textarea {
+            width: 100%;
+            padding: 14px 16px;
+            border: 2px solid var(--border-color);
+            border-radius: 10px;
+            font-size: 15px;
+            font-family: 'Source Sans Pro', sans-serif;
+            transition: all 0.3s ease;
+            background: var(--white);
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        .form-textarea:focus {
+            outline: none;
+            border-color: var(--accent-gold);
+            box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.1);
+        }
+
+        .logo-upload {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .logo-preview {
+            width: 80px;
+            height: 80px;
+            background: var(--bg-light);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px dashed var(--border-color);
+            overflow: hidden;
+        }
+
+        .logo-preview img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .logo-preview svg {
+            width: 32px;
+            height: 32px;
+            fill: var(--text-light);
+        }
+
+        .upload-btn {
+            padding: 10px 20px;
+            background: var(--bg-light);
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--text-dark);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .upload-btn:hover {
+            border-color: var(--accent-gold);
+            background: rgba(212, 175, 55, 0.05);
+        }
+
+        .room-type-list {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+
+        .room-type-card {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 16px;
+            background: var(--bg-light);
+            border-radius: 12px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .room-type-card:hover {
+            transform: translateX(5px);
+            box-shadow: var(--shadow-subtle);
+        }
+
+        .room-type-image {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, var(--primary-blue) 0%, #2c5282 100%);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .room-type-image svg {
+            width: 28px;
+            height: 28px;
+            fill: var(--white);
+        }
+
+        .room-type-info {
+            flex: 1;
+        }
+
+        .room-type-name {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--text-dark);
+            margin-bottom: 4px;
+        }
+
+        .room-type-price {
+            font-size: 14px;
+            color: var(--accent-gold);
+            font-weight: 600;
+        }
+
+        .room-type-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .action-btn {
+            width: 36px;
+            height: 36px;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .edit-btn {
+            background: var(--white);
+            border: 1px solid var(--border-color);
+        }
+
+        .edit-btn:hover {
+            background: var(--primary-blue);
+            border-color: var(--primary-blue);
+        }
+
+        .edit-btn:hover svg {
+            fill: var(--white);
+        }
+
+        .delete-btn {
+            background: var(--white);
+            border: 1px solid var(--border-color);
+        }
+
+        .delete-btn:hover {
+            background: #e53e3e;
+            border-color: #e53e3e;
+        }
+
+        .delete-btn:hover svg {
+            fill: var(--white);
+        }
+
+        .action-btn svg {
+            width: 16px;
+            height: 16px;
+            fill: var(--text-light);
+            transition: fill 0.3s ease;
+        }
+
+        .add-btn {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, var(--accent-gold) 0%, #ecc94b 100%);
+            color: var(--white);
+            border: none;
+            border-radius: 10px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .add-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-gold);
+        }
+
+        .add-btn svg {
+            width: 20px;
+            height: 20px;
+        }
+
+        .facilities-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+            gap: 12px;
+        }
+
+        .facility-tag {
+            padding: 10px 16px;
+            background: var(--bg-light);
+            border: 2px solid var(--border-color);
+            border-radius: 20px;
+            font-size: 13px;
+            color: var(--text-dark);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+
+        .facility-tag:hover {
+            border-color: var(--accent-gold);
+            background: rgba(212, 175, 55, 0.05);
+        }
+
+        .facility-tag.selected {
+            background: linear-gradient(135deg, var(--accent-gold) 0%, #ecc94b 100%);
+            color: var(--white);
+            border-color: var(--accent-gold);
+        }
+
+        .save-btn {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, var(--primary-blue) 0%, #2c5282 100%);
+            color: var(--white);
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'Source Sans Pro', sans-serif;
+        }
+
+        .save-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-medium);
+        }
+
+        .toast {
+            position: fixed;
+            top: 100px;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 16px 24px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            z-index: 1000;
+            animation: toastSlide 0.3s ease-out;
+        }
+
+        @keyframes toastSlide {
+            from {
+                opacity: 0;
+                transform: translateX(-50%) translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(-50%) translateY(0);
+            }
+        }
+
+        .toast.success {
+            background: #38a169;
+            color: var(--white);
+            box-shadow: 0 4px 12px rgba(56, 161, 105, 0.3);
+        }
+
+        .toast.error {
+            background: #e53e3e;
+            color: var(--white);
+            box-shadow: 0 4px 12px rgba(229, 62, 62, 0.3);
+        }
+
+        .toast-icon {
+            width: 20px;
+            height: 20px;
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="header-content">
+            <button class="back-btn" onclick="goBack()">
+                <svg viewBox="0 0 24 24">
+                    <path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/>
+                </svg>
+            </button>
+            <h1 class="page-title">酒店信息</h1>
+        </div>
+    </header>
+
+    <main class="main-container">
+        <section class="section">
+            <div class="section-header">
+                <div class="section-icon">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
+                    </svg>
+                </div>
+                <h2 class="section-title">基本信息</h2>
+            </div>
+
+            <div class="form-group">
+                <label>酒店名称<span class="required">*</span></label>
+                <input type="text" class="form-input" id="hotelName" placeholder="请输入酒店名称" value="悦悦精品酒店">
+            </div>
+
+            <div class="form-group">
+                <label>酒店地址<span class="required">*</span></label>
+                <input type="text" class="form-input" id="hotelAddress" placeholder="请输入酒店地址" value="上海市浦东新区陆家嘴环路1000号">
+            </div>
+
+            <div class="form-group">
+                <label>联系电话<span class="required">*</span></label>
+                <input type="tel" class="form-input" id="hotelPhone" placeholder="请输入联系电话" value="021-12345678">
+            </div>
+
+            <div class="form-group">
+                <label>酒店Logo</label>
+                <div class="logo-upload">
+                    <div class="logo-preview" id="logoPreview">
+                        <svg viewBox="0 0 24 24">
+                            <path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/>
+                        </svg>
+                    </div>
+                    <button class="upload-btn" onclick="uploadLogo()">
+                        上传图片
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <section class="section">
+            <div class="section-header">
+                <div class="section-icon">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M7 13c1.66 0 3-1.34 3-3S8.66 7 7 7s-3 1.34-3 3 1.34 3 3 3zm12-6h-8v7H3V5H1v15h2v-3h18v3h2v-9c0-2.21-1.79-4-4-4z"/>
+                    </svg>
+                </div>
+                <h2 class="section-title">房型管理</h2>
+            </div>
+
+            <div class="room-type-list" id="roomTypeList">
+                <div class="room-type-card" onclick="editRoomType('standard')">
+                    <div class="room-type-image">
+                        <svg viewBox="0 0 24 24">
+                            <path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 14H4V6h16v12zM6 10h12v2H6zm0 4h12v2H6z"/>
+                        </svg>
+                    </div>
+                    <div class="room-type-info">
+                        <div class="room-type-name">标准间</div>
+                        <div class="room-type-price">¥299/晚</div>
+                    </div>
+                    <div class="room-type-actions">
+                        <button class="action-btn edit-btn" onclick="event.stopPropagation(); editRoomType('standard')">
+                            <svg viewBox="0 0 24 24">
+                                <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/>
+                            </svg>
+                        </button>
+                        <button class="action-btn delete-btn" onclick="event.stopPropagation(); deleteRoomType('standard')">
+                            <svg viewBox="0 0 24 24">
+                                <path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="room-type-card" onclick="editRoomType('deluxe')">
+                    <div class="room-type-image">
+                        <svg viewBox="0 0 24 24">
+                            <path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 14H4V6h16v12zM6 10h12v2H6zm0 4h12v2H6z"/>
+                        </svg>
+                    </div>
+                    <div class="room-type-info">
+                        <div class="room-type-name">豪华间</div>
+                        <div class="room-type-price">¥599/晚</div>
+                    </div>
+                    <div class="room-type-actions">
+                        <button class="action-btn edit-btn" onclick="event.stopPropagation(); editRoomType('deluxe')">
+                            <svg viewBox="0 0 24 24">
+                                <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/>
+                            </svg>
+                        </button>
+                        <button class="action-btn delete-btn" onclick="event.stopPropagation(); deleteRoomType('deluxe')">
+                            <svg viewBox="0 0 24 24">
+                                <path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="room-type-card" onclick="editRoomType('suite')">
+                    <div class="room-type-image">
+                        <svg viewBox="0 0 24 24">
+                            <path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 14H4V6h16v12zM6 10h12v2H6zm0 4h12v2H6z"/>
+                        </svg>
+                    </div>
+                    <div class="room-type-info">
+                        <div class="room-type-name">行政套房</div>
+                        <div class="room-type-price">¥999/晚</div>
+                    </div>
+                    <div class="room-type-actions">
+                        <button class="action-btn edit-btn" onclick="event.stopPropagation(); editRoomType('suite')">
+                            <svg viewBox="0 0 24 24">
+                                <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/>
+                            </svg>
+                        </button>
+                        <button class="action-btn delete-btn" onclick="event.stopPropagation(); deleteRoomType('suite')">
+                            <svg viewBox="0 0 24 24">
+                                <path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <button class="add-btn" onclick="addRoomType()">
+                <svg viewBox="0 0 24 24">
+                    <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/>
+                </svg>
+                新增房型
+            </button>
+        </section>
+
+        <section class="section">
+            <div class="section-header">
+                <div class="section-icon">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/>
+                    </svg>
+                </div>
+                <h2 class="section-title">酒店简介</h2>
+            </div>
+
+            <div class="form-group">
+                <label>酒店介绍</label>
+                <textarea class="form-textarea" id="hotelDescription" placeholder="请输入酒店介绍">悦悦精品酒店位于上海市浦东新区陆家嘴金融中心核心地带，紧邻东方明珠电视塔和上海中心大厦。酒店拥有120间精心设计的客房，融合现代简约与经典奢华，为商务出行和休闲旅游提供卓越的住宿体验。</textarea>
+            </div>
+
+            <div class="form-group">
+                <label>设施服务</label>
+                <div class="facilities-grid" id="facilitiesGrid">
+                    <div class="facility-tag" onclick="toggleFacility(this)">免费WiFi</div>
+                    <div class="facility-tag selected" onclick="toggleFacility(this)">免费停车</div>
+                    <div class="facility-tag selected" onclick="toggleFacility(this)">早餐</div>
+                    <div class="facility-tag" onclick="toggleFacility(this)">健身房</div>
+                    <div class="facility-tag" onclick="toggleFacility(this)">游泳池</div>
+                    <div class="facility-tag selected" onclick="toggleFacility(this)">会议室</div>
+                    <div class="facility-tag" onclick="toggleFacility(this)">洗衣服务</div>
+                    <div class="facility-tag" onclick="toggleFacility(this)">接送服务</div>
+                </div>
+            </div>
+        </section>
+
+        <button class="save-btn" onclick="saveHotelInfo()">
+            保存更改
+        </button>
+    </main>
+
+    <script>
+        const STORAGE_KEY = 'yingli_hotel_info';
+
+        function goBack() {
+            window.location.href = 'profile.html';
+        }
+
+        function toggleFacility(element) {
+            element.classList.toggle('selected');
+        }
+
+        function uploadLogo() {
+            alert('图片上传功能（demo阶段，暂未实现）');
+        }
+
+        function addRoomType() {
+            alert('新增房型功能（demo阶段，暂未实现）');
+        }
+
+        function editRoomType(id) {
+            alert(`编辑房型 ${id}（demo阶段，暂未实现）`);
+        }
+
+        function deleteRoomType(id) {
+            if (confirm(`确定要删除该房型吗？`)) {
+                alert(`删除房型 ${id}（demo阶段，暂未实现）`);
+            }
+        }
+
+        function saveHotelInfo() {
+            const hotelInfo = {
+                name: document.getElementById('hotelName').value,
+                address: document.getElementById('hotelAddress').value,
+                phone: document.getElementById('hotelPhone').value,
+                description: document.getElementById('hotelDescription').value,
+                facilities: Array.from(document.querySelectorAll('.facility-tag.selected'))
+                    .map(tag => tag.textContent),
+                roomTypes: [
+                    { id: 'standard', name: '标准间', price: 299 },
+                    { id: 'deluxe', name: '豪华间', price: 599 },
+                    { id: 'suite', name: '行政套房', price: 999 }
+                ],
+                updatedAt: new Date().toISOString()
+            };
+
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(hotelInfo));
+            showToast('保存成功！', 'success');
+            
+            setTimeout(() => {
+                window.location.href = 'profile.html';
+            }, 1500);
+        }
+
+        function showToast(message, type = 'success') {
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            
+            const icon = type === 'success' 
+                ? '<svg class="toast-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>'
+                : '<svg class="toast-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>';
+            
+            toast.innerHTML = `${icon}<span>${message}</span>`;
+            document.body.appendChild(toast);
+
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+
+        window.addEventListener('load', function() {
+            const savedData = localStorage.getItem(STORAGE_KEY);
+            if (savedData) {
+                const hotelInfo = JSON.parse(savedData);
+                if (hotelInfo.name) document.getElementById('hotelName').value = hotelInfo.name;
+                if (hotelInfo.address) document.getElementById('hotelAddress').value = hotelInfo.address;
+                if (hotelInfo.phone) document.getElementById('hotelPhone').value = hotelInfo.phone;
+                if (hotelInfo.description) document.getElementById('hotelDescription').value = hotelInfo.description;
+            }
+        });
+    </script>
+</body>
+</html>

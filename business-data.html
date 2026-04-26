@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>经营数据 - 迎鲤酒店智能助手</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Source+Sans+Pro:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-blue: #1a365d;
+            --accent-gold: #d4af37;
+            --white: #ffffff;
+            --text-dark: #2d3748;
+            --text-light: #718096;
+            --bg-light: #f7fafc;
+            --border-color: #e2e8f0;
+            --shadow-subtle: 0 2px 8px rgba(0, 0, 0, 0.08);
+            --shadow-medium: 0 4px 12px rgba(0, 0, 0, 0.1);
+            --shadow-gold: 0 4px 20px rgba(212, 175, 55, 0.15);
+        }
+
+        body {
+            font-family: 'Source Sans Pro', sans-serif;
+            background: var(--bg-light);
+            min-height: 100vh;
+            padding-bottom: 80px;
+        }
+
+        .header {
+            background: linear-gradient(135deg, var(--primary-blue) 0%, #2c5282 100%);
+            padding: 20px;
+            position: relative;
+            box-shadow: var(--shadow-medium);
+        }
+
+        .header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, var(--accent-gold), transparent);
+        }
+
+        .header-content {
+            max-width: 600px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .back-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        .back-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateX(-3px);
+        }
+
+        .back-btn svg {
+            width: 24px;
+            height: 24px;
+            fill: var(--white);
+        }
+
+        .page-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--white);
+            letter-spacing: 0.5px;
+            flex: 1;
+        }
+
+        .export-btn {
+            padding: 10px 20px;
+            background: var(--white);
+            color: var(--primary-blue);
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .export-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-gold);
+        }
+
+        .export-btn svg {
+            width: 18px;
+            height: 18px;
+        }
+
+        .main-container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .time-selector {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 20px;
+            background: var(--white);
+            border-radius: 12px;
+            padding: 8px;
+            box-shadow: var(--shadow-subtle);
+            animation: slideUp 0.5s ease-out backwards;
+        }
+
+        .time-btn {
+            flex: 1;
+            padding: 10px 16px;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'Source Sans Pro', sans-serif;
+            background: var(--bg-light);
+            color: var(--text-light);
+        }
+
+        .time-btn:hover {
+            background: var(--border-color);
+        }
+
+        .time-btn.active {
+            background: linear-gradient(135deg, var(--primary-blue) 0%, #2c5282 100%);
+            color: var(--white);
+        }
+
+        .section {
+            background: var(--white);
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 20px;
+            box-shadow: var(--shadow-subtle);
+            animation: slideUp 0.5s ease-out backwards;
+        }
+
+        .section:nth-child(2) {
+            animation-delay: 0.15s;
+        }
+
+        .section:nth-child(3) {
+            animation-delay: 0.3s;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 20px;
+            padding-bottom: 16px;
+            border-bottom: 2px solid var(--bg-light);
+        }
+
+        .section-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, var(--accent-gold) 0%, #ecc94b 100%);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .section-icon svg {
+            width: 20px;
+            height: 20px;
+            fill: var(--white);
+        }
+
+        .section-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 18px;
+            color: var(--primary-blue);
+            font-weight: 600;
+        }
+
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+        }
+
+        .metric-card {
+            text-align: center;
+            padding: 20px;
+            background: var(--bg-light);
+            border-radius: 12px;
+            transition: all 0.3s ease;
+        }
+
+        .metric-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-subtle);
+        }
+
+        .metric-value {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--primary-blue);
+            margin-bottom: 8px;
+        }
+
+        .metric-label {
+            font-size: 13px;
+            color: var(--text-light);
+            margin-bottom: 4px;
+        }
+
+        .metric-change {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 13px;
+            font-weight: 600;
+            padding: 4px 10px;
+            border-radius: 12px;
+        }
+
+        .metric-change.up {
+            background: rgba(56, 161, 105, 0.1);
+            color: #38a169;
+        }
+
+        .metric-change.down {
+            background: rgba(229, 62, 62, 0.1);
+            color: #e53e3e;
+        }
+
+        .metric-change svg {
+            width: 14px;
+            height: 14px;
+        }
+
+        .table-container {
+            overflow-x: auto;
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .data-table th {
+            text-align: left;
+            padding: 12px;
+            background: var(--bg-light);
+            color: var(--text-light);
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .data-table td {
+            padding: 12px;
+            border-bottom: 1px solid var(--border-color);
+            color: var(--text-dark);
+            font-size: 14px;
+        }
+
+        .data-table tr:hover td {
+            background: var(--bg-light);
+        }
+
+        .data-table .amount {
+            font-weight: 600;
+            color: var(--primary-blue);
+        }
+
+        .data-table .profit {
+            font-weight: 600;
+            color: #38a169;
+        }
+
+        .chart-placeholder {
+            height: 200px;
+            background: linear-gradient(135deg, var(--bg-light) 0%, var(--border-color) 100%);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .chart-placeholder svg {
+            width: 48px;
+            height: 48px;
+            fill: var(--text-light);
+            opacity: 0.5;
+        }
+
+        .chart-placeholder p {
+            color: var(--text-light);
+            font-size: 14px;
+        }
+
+        .toast {
+            position: fixed;
+            top: 100px;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 16px 24px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            z-index: 1000;
+            animation: toastSlide 0.3s ease-out;
+        }
+
+        @keyframes toastSlide {
+            from {
+                opacity: 0;
+                transform: translateX(-50%) translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(-50%) translateY(0);
+            }
+        }
+
+        .toast.success {
+            background: #38a169;
+            color: var(--white);
+            box-shadow: 0 4px 12px rgba(56, 161, 105, 0.3);
+        }
+
+        .toast.info {
+            background: var(--primary-blue);
+            color: var(--white);
+            box-shadow: 0 4px 12px rgba(26, 54, 93, 0.3);
+        }
+
+        .toast-icon {
+            width: 20px;
+            height: 20px;
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="header-content">
+            <button class="back-btn" onclick="goBack()">
+                <svg viewBox="0 0 24 24">
+                    <path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/>
+                </svg>
+            </button>
+            <h1 class="page-title">经营数据</h1>
+            <button class="export-btn" onclick="exportData()">
+                <svg viewBox="0 0 24 24">
+                    <path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/>
+                </svg>
+                导出
+            </button>
+        </div>
+    </header>
+
+    <main class="main-container">
+        <div class="time-selector">
+            <button class="time-btn" onclick="changePeriod('day')">今日</button>
+            <button class="time-btn" onclick="changePeriod('week')">本周</button>
+            <button class="time-btn active" onclick="changePeriod('month')">本月</button>
+            <button class="time-btn" onclick="changePeriod('year')">本年</button>
+        </div>
+
+        <section class="section">
+            <div class="section-header">
+                <div class="section-icon">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z"/>
+                    </svg>
+                </div>
+                <h2 class="section-title">运营指标</h2>
+            </div>
+
+            <div class="metrics-grid">
+                <div class="metric-card">
+                    <div class="metric-value">78.5<span style="font-size: 16px;">%</span></div>
+                    <div class="metric-label">入住率</div>
+                    <div class="metric-change up">
+                        <svg viewBox="0 0 24 24">
+                            <path d="M7 14l5-5 5 5z"/>
+                        </svg>
+                        5.2%
+                    </div>
+                </div>
+
+                <div class="metric-card">
+                    <div class="metric-value">¥456</div>
+                    <div class="metric-label">平均房价(ADR)</div>
+                    <div class="metric-change up">
+                        <svg viewBox="0 0 24 24">
+                            <path d="M7 14l5-5 5 5z"/>
+                        </svg>
+                        12.3%
+                    </div>
+                </div>
+
+                <div class="metric-card">
+                    <div class="metric-value">¥358</div>
+                    <div class="metric-label">RevPAR</div>
+                    <div class="metric-change up">
+                        <svg viewBox="0 0 24 24">
+                            <path d="M7 14l5-5 5 5z"/>
+                        </svg>
+                        18.7%
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="section">
+            <div class="section-header">
+                <div class="section-icon">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M11.8 10.9c-2.27-.59-3-1.2-3-2.15 0-1.09 1.01-1.85 2.7-1.85 1.78 0 2.44.85 2.5 2.1h2.21c-.07-1.72-1.12-3.3-3.21-3.81V3h-3v2.16c-1.94.42-3.5 1.68-3.5 3.61 0 2.31 1.91 3.46 4.7 4.13 2.5.6 3 1.48 3 2.41 0 .69-.49 1.79-2.7 1.79-2.06 0-2.87-.92-2.98-2.1h-2.2c.12 2.19 1.76 3.42 3.68 3.83V21h3v-2.15c1.95-.37 3.5-1.5 3.5-3.55 0-2.84-2.43-3.81-4.7-4.4z"/>
+                    </svg>
+                </div>
+                <h2 class="section-title">财务报表</h2>
+            </div>
+
+            <div class="table-container">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>月份</th>
+                            <th>收入</th>
+                            <th>成本</th>
+                            <th>利润</th>
+                            <th>利润率</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>2024-04</td>
+                            <td class="amount">¥150万</td>
+                            <td class="amount">¥90万</td>
+                            <td class="profit">¥60万</td>
+                            <td>40.0%</td>
+                        </tr>
+                        <tr>
+                            <td>2024-03</td>
+                            <td class="amount">¥145万</td>
+                            <td class="amount">¥88万</td>
+                            <td class="profit">¥57万</td>
+                            <td>39.3%</td>
+                        </tr>
+                        <tr>
+                            <td>2024-02</td>
+                            <td class="amount">¥130万</td>
+                            <td class="amount">¥80万</td>
+                            <td class="profit">¥50万</td>
+                            <td>38.5%</td>
+                        </tr>
+                        <tr>
+                            <td>2024-01</td>
+                            <td class="amount">¥120万</td>
+                            <td class="amount">¥75万</td>
+                            <td class="profit">¥45万</td>
+                            <td>37.5%</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <section class="section">
+            <div class="section-header">
+                <div class="section-icon">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M3.5 18.49l6-6.01 4 4L22 6.92l-1.41-1.41-7.09 7.97-4-4L2 16.99z"/>
+                    </svg>
+                </div>
+                <h2 class="section-title">收入趋势</h2>
+            </div>
+
+            <div class="chart-placeholder">
+                <svg viewBox="0 0 24 24">
+                    <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z"/>
+                </svg>
+                <p>图表功能（demo阶段，暂未实现）</p>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        const STORAGE_KEY = 'yingli_business_data';
+        let currentPeriod = 'month';
+
+        function goBack() {
+            window.location.href = 'profile.html';
+        }
+
+        function changePeriod(period) {
+            currentPeriod = period;
+            
+            document.querySelectorAll('.time-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+
+            showToast(`已切换到${getPeriodName(period)}数据`, 'info');
+        }
+
+        function getPeriodName(period) {
+            const names = {
+                day: '今日',
+                week: '本周',
+                month: '本月',
+                year: '本年'
+            };
+            return names[period] || '本月';
+        }
+
+        function exportData() {
+            const businessData = {
+                period: currentPeriod,
+                metrics: {
+                    occupancyRate: 78.5,
+                    adr: 456,
+                    revpar: 358
+                },
+                financial: [
+                    { month: '2024-04', revenue: 1500000, cost: 900000, profit: 600000, profitRate: 40 },
+                    { month: '2024-03', revenue: 1450000, cost: 880000, profit: 570000, profitRate: 39.3 },
+                    { month: '2024-02', revenue: 1300000, cost: 800000, profit: 500000, profitRate: 38.5 },
+                    { month: '2024-01', revenue: 1200000, cost: 750000, profit: 450000, profitRate: 37.5 }
+                ],
+                exportedAt: new Date().toISOString()
+            };
+
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(businessData));
+            showToast('导出成功！', 'success');
+        }
+
+        function showToast(message, type = 'success') {
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            
+            const icon = type === 'success' 
+                ? '<svg class="toast-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>'
+                : '<svg class="toast-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>';
+            
+            toast.innerHTML = `${icon}<span>${message}</span>`;
+            document.body.appendChild(toast);
+
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+    </script>
+</body>
+</html>
