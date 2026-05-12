@@ -489,6 +489,7 @@
             height: 20px;
         }
     </style>
+    <link rel="stylesheet" href="modal.css">
 </head>
 <body>
     <header class="header">
@@ -515,17 +516,17 @@
 
             <div class="form-group">
                 <label>酒店名称<span class="required">*</span></label>
-                <input type="text" class="form-input" id="hotelName" placeholder="请输入酒店名称" value="悦悦精品酒店">
+                <input type="text" class="form-input" id="hotelName" placeholder="请输入酒店名称">
             </div>
 
             <div class="form-group">
                 <label>酒店地址<span class="required">*</span></label>
-                <input type="text" class="form-input" id="hotelAddress" placeholder="请输入酒店地址" value="上海市浦东新区陆家嘴环路1000号">
+                <input type="text" class="form-input" id="hotelAddress" placeholder="请输入酒店地址">
             </div>
 
             <div class="form-group">
                 <label>联系电话<span class="required">*</span></label>
-                <input type="tel" class="form-input" id="hotelPhone" placeholder="请输入联系电话" value="021-12345678">
+                <input type="tel" class="form-input" id="hotelPhone" placeholder="请输入联系电话">
             </div>
 
             <div class="form-group">
@@ -554,77 +555,7 @@
             </div>
 
             <div class="room-type-list" id="roomTypeList">
-                <div class="room-type-card" onclick="editRoomType('standard')">
-                    <div class="room-type-image">
-                        <svg viewBox="0 0 24 24">
-                            <path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 14H4V6h16v12zM6 10h12v2H6zm0 4h12v2H6z"/>
-                        </svg>
-                    </div>
-                    <div class="room-type-info">
-                        <div class="room-type-name">标准间</div>
-                        <div class="room-type-price">¥299/晚</div>
-                    </div>
-                    <div class="room-type-actions">
-                        <button class="action-btn edit-btn" onclick="event.stopPropagation(); editRoomType('standard')">
-                            <svg viewBox="0 0 24 24">
-                                <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/>
-                            </svg>
-                        </button>
-                        <button class="action-btn delete-btn" onclick="event.stopPropagation(); deleteRoomType('standard')">
-                            <svg viewBox="0 0 24 24">
-                                <path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/>
-                            </svg>
-                        </button>
-                    </div>
-                </div>
-
-                <div class="room-type-card" onclick="editRoomType('deluxe')">
-                    <div class="room-type-image">
-                        <svg viewBox="0 0 24 24">
-                            <path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 14H4V6h16v12zM6 10h12v2H6zm0 4h12v2H6z"/>
-                        </svg>
-                    </div>
-                    <div class="room-type-info">
-                        <div class="room-type-name">豪华间</div>
-                        <div class="room-type-price">¥599/晚</div>
-                    </div>
-                    <div class="room-type-actions">
-                        <button class="action-btn edit-btn" onclick="event.stopPropagation(); editRoomType('deluxe')">
-                            <svg viewBox="0 0 24 24">
-                                <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/>
-                            </svg>
-                        </button>
-                        <button class="action-btn delete-btn" onclick="event.stopPropagation(); deleteRoomType('deluxe')">
-                            <svg viewBox="0 0 24 24">
-                                <path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/>
-                            </svg>
-                        </button>
-                    </div>
-                </div>
-
-                <div class="room-type-card" onclick="editRoomType('suite')">
-                    <div class="room-type-image">
-                        <svg viewBox="0 0 24 24">
-                            <path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 14H4V6h16v12zM6 10h12v2H6zm0 4h12v2H6z"/>
-                        </svg>
-                    </div>
-                    <div class="room-type-info">
-                        <div class="room-type-name">行政套房</div>
-                        <div class="room-type-price">¥999/晚</div>
-                    </div>
-                    <div class="room-type-actions">
-                        <button class="action-btn edit-btn" onclick="event.stopPropagation(); editRoomType('suite')">
-                            <svg viewBox="0 0 24 24">
-                                <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/>
-                            </svg>
-                        </button>
-                        <button class="action-btn delete-btn" onclick="event.stopPropagation(); deleteRoomType('suite')">
-                            <svg viewBox="0 0 24 24">
-                                <path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/>
-                            </svg>
-                        </button>
-                    </div>
-                </div>
+                <div style="text-align:center;padding:40px;color:#718096;">加载中...</div>
             </div>
 
             <button class="add-btn" onclick="addRoomType()">
@@ -647,18 +578,18 @@
 
             <div class="form-group">
                 <label>酒店介绍</label>
-                <textarea class="form-textarea" id="hotelDescription" placeholder="请输入酒店介绍">悦悦精品酒店位于上海市浦东新区陆家嘴金融中心核心地带，紧邻东方明珠电视塔和上海中心大厦。酒店拥有120间精心设计的客房，融合现代简约与经典奢华，为商务出行和休闲旅游提供卓越的住宿体验。</textarea>
+                <textarea class="form-textarea" id="hotelDescription" placeholder="请输入酒店介绍"></textarea>
             </div>
 
             <div class="form-group">
                 <label>设施服务</label>
                 <div class="facilities-grid" id="facilitiesGrid">
                     <div class="facility-tag" onclick="toggleFacility(this)">免费WiFi</div>
-                    <div class="facility-tag selected" onclick="toggleFacility(this)">免费停车</div>
-                    <div class="facility-tag selected" onclick="toggleFacility(this)">早餐</div>
+                    <div class="facility-tag" onclick="toggleFacility(this)">免费停车</div>
+                    <div class="facility-tag" onclick="toggleFacility(this)">早餐</div>
                     <div class="facility-tag" onclick="toggleFacility(this)">健身房</div>
                     <div class="facility-tag" onclick="toggleFacility(this)">游泳池</div>
-                    <div class="facility-tag selected" onclick="toggleFacility(this)">会议室</div>
+                    <div class="facility-tag" onclick="toggleFacility(this)">会议室</div>
                     <div class="facility-tag" onclick="toggleFacility(this)">洗衣服务</div>
                     <div class="facility-tag" onclick="toggleFacility(this)">接送服务</div>
                 </div>
@@ -670,9 +601,8 @@
         </button>
     </main>
 
+    <script src="api.js"></script>
     <script>
-        const STORAGE_KEY = 'yingli_hotel_info';
-
         function goBack() {
             window.location.href = 'profile.html';
         }
@@ -682,45 +612,159 @@
         }
 
         function uploadLogo() {
-            alert('图片上传功能（demo阶段，暂未实现）');
+            yingliAlert('图片上传功能（暂未实现）');
         }
 
-        function addRoomType() {
-            alert('新增房型功能（demo阶段，暂未实现）');
-        }
+        async function loadHotelInfo() {
+            try {
+                const hotel = await apiRequest('/hotel/info');
+                if (hotel.name) document.getElementById('hotelName').value = hotel.name;
+                if (hotel.address) document.getElementById('hotelAddress').value = hotel.address;
+                if (hotel.phone) document.getElementById('hotelPhone').value = hotel.phone;
+                if (hotel.description) document.getElementById('hotelDescription').value = hotel.description;
 
-        function editRoomType(id) {
-            alert(`编辑房型 ${id}（demo阶段，暂未实现）`);
-        }
-
-        function deleteRoomType(id) {
-            if (confirm(`确定要删除该房型吗？`)) {
-                alert(`删除房型 ${id}（demo阶段，暂未实现）`);
+                if (hotel.facilities) {
+                    const facilities = hotel.facilities.split(',');
+                    document.querySelectorAll('.facility-tag').forEach(tag => {
+                        if (facilities.includes(tag.textContent.trim())) {
+                            tag.classList.add('selected');
+                        } else {
+                            tag.classList.remove('selected');
+                        }
+                    });
+                }
+            } catch (e) {
+                console.error('加载酒店信息失败', e);
             }
         }
 
-        function saveHotelInfo() {
+        async function loadRoomTypes() {
+            try {
+                const roomTypes = await apiRequest('/hotel/room-types');
+                const listEl = document.getElementById('roomTypeList');
+                listEl.innerHTML = roomTypes.map(rt => {
+                    var priceText = rt.price && rt.price > 0 ? '¥' + rt.price + '/晚' : '暂无报价';
+                    var countText = rt.capacity && rt.capacity > 0 ? rt.capacity + '间' : '';
+                    var subText = [priceText, countText].filter(function(s) { return s; }).join(' · ');
+                    return `
+                    <div class="room-type-card" onclick="editRoomType(${rt.id})">
+                        <div class="room-type-image">
+                            <svg viewBox="0 0 24 24">
+                                <path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 14H4V6h16v12zM6 10h12v2H6zm0 4h12v2H6z"/>
+                            </svg>
+                        </div>
+                        <div class="room-type-info">
+                            <div class="room-type-name">${rt.name}</div>
+                            <div class="room-type-price">${subText}</div>
+                        </div>
+                        <div class="room-type-actions">
+                            <button class="action-btn edit-btn" onclick="event.stopPropagation(); editRoomType(${rt.id})">
+                                <svg viewBox="0 0 24 24">
+                                    <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/>
+                                </svg>
+                            </button>
+                            <button class="action-btn delete-btn" onclick="event.stopPropagation(); deleteRoomType(${rt.id})">
+                                <svg viewBox="0 0 24 24">
+                                    <path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>`;
+                }).join('');
+            } catch (e) {
+                console.error('加载房型列表失败', e);
+            }
+        }
+
+        function addRoomType() {
+            yingliPrompt('请输入房型名称：', '新增房型', '', function(name) {
+                if (!name) return;
+                yingliPrompt('请输入价格（元/晚）：', '新增房型', '', function(price) {
+                    yingliPrompt('请输入房间数量：', '新增房型', '', function(capacity) {
+                        var data = { name: name };
+                        if (price) data.price = parseFloat(price);
+                        if (capacity) data.capacity = parseInt(capacity);
+                        apiRequest('/hotel/room-types', {
+                            method: 'POST',
+                            body: JSON.stringify(data)
+                        }).then(function() {
+                            showToast('添加成功', 'success');
+                            loadRoomTypes();
+                        }).catch(function(e) {
+                            showToast(e.message || '添加失败', 'error');
+                        });
+                    });
+                });
+            });
+        }
+
+        function editRoomType(id) {
+            var rt = null;
+            var found = false;
+            apiRequest('/hotel/room-types').then(function(list) {
+                list.forEach(function(item) {
+                    if (item.id === id) { rt = item; found = true; }
+                });
+                if (!rt) { showToast('未找到房型', 'error'); return; }
+
+                yingliPrompt('请输入房型名称：', '编辑房型', rt.name || '', function(name) {
+                    if (!name) return;
+                    yingliPrompt('请输入价格（元/晚）：', '编辑房型', rt.price ? String(rt.price) : '', function(price) {
+                        yingliPrompt('请输入房间数量：', '编辑房型', rt.capacity ? String(rt.capacity) : '', function(capacity) {
+                            var data = { name: name };
+                            if (price) data.price = parseFloat(price);
+                            if (capacity) data.capacity = parseInt(capacity);
+                            apiRequest('/hotel/room-types/' + id, {
+                                method: 'PUT',
+                                body: JSON.stringify(data)
+                            }).then(function() {
+                                showToast('修改成功', 'success');
+                                loadRoomTypes();
+                            }).catch(function(e) {
+                                showToast(e.message || '修改失败', 'error');
+                            });
+                        });
+                    });
+                });
+            }).catch(function(e) {
+                showToast(e.message || '获取房型失败', 'error');
+            });
+        }
+
+        function deleteRoomType(id) {
+            yingliConfirm('确定要删除该房型吗？', null, async function() {
+                try {
+                    await apiRequest('/hotel/room-types/' + id, { method: 'DELETE' });
+                    showToast('删除成功', 'success');
+                    loadRoomTypes();
+                } catch (e) {
+                    showToast(e.message || '删除失败', 'error');
+                }
+            });
+        }
+
+        async function saveHotelInfo() {
             const hotelInfo = {
                 name: document.getElementById('hotelName').value,
                 address: document.getElementById('hotelAddress').value,
                 phone: document.getElementById('hotelPhone').value,
                 description: document.getElementById('hotelDescription').value,
                 facilities: Array.from(document.querySelectorAll('.facility-tag.selected'))
-                    .map(tag => tag.textContent),
-                roomTypes: [
-                    { id: 'standard', name: '标准间', price: 299 },
-                    { id: 'deluxe', name: '豪华间', price: 599 },
-                    { id: 'suite', name: '行政套房', price: 999 }
-                ],
-                updatedAt: new Date().toISOString()
+                    .map(tag => tag.textContent).join(',')
             };
 
-            localStorage.setItem(STORAGE_KEY, JSON.stringify(hotelInfo));
-            showToast('保存成功！', 'success');
-            
-            setTimeout(() => {
-                window.location.href = 'profile.html';
-            }, 1500);
+            try {
+                await apiRequest('/hotel/info', {
+                    method: 'POST',
+                    body: JSON.stringify(hotelInfo)
+                });
+                showToast('保存成功！', 'success');
+                setTimeout(() => {
+                    window.location.href = 'profile.html';
+                }, 1500);
+            } catch (error) {
+                showToast(error.message || '保存失败', 'error');
+            }
         }
 
         function showToast(message, type = 'success') {
@@ -740,16 +784,12 @@
             }, 3000);
         }
 
-        window.addEventListener('load', function() {
-            const savedData = localStorage.getItem(STORAGE_KEY);
-            if (savedData) {
-                const hotelInfo = JSON.parse(savedData);
-                if (hotelInfo.name) document.getElementById('hotelName').value = hotelInfo.name;
-                if (hotelInfo.address) document.getElementById('hotelAddress').value = hotelInfo.address;
-                if (hotelInfo.phone) document.getElementById('hotelPhone').value = hotelInfo.phone;
-                if (hotelInfo.description) document.getElementById('hotelDescription').value = hotelInfo.description;
-            }
-        });
+        if (checkAuth()) {
+            window.addEventListener('load', function() {
+                loadHotelInfo();
+                loadRoomTypes();
+            });
+        }
     </script>
 </body>
 </html>

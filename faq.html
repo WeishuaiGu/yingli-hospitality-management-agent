@@ -453,159 +453,21 @@
         </button>
     </nav>
 
+    <script src="api.js"></script>
     <script>
-        const faqData = [
-            {
-                id: 1,
-                category: 'revenue',
-                question: '如何提高酒店的入住率？',
-                answer: `<p><strong>提高入住率的有效方法：</strong></p>
-                <ol>
-                    <li><strong>动态定价策略</strong>：根据季节、节假日、预订周期等因素灵活调整价格，平季适当降价吸引客户。</li>
-                    <li><strong>优化OTA渠道</strong>：在携程、美团等主流平台维护好评，提高曝光率，积极参与平台活动。</li>
-                    <li><strong>开发长住客户</strong>：推出周租、月租套餐，吸引商务长住客和外地游客。</li>
-                    <li><strong>会员体系建设</strong>：建立会员等级制度，提供差异化服务和优惠，提高复购率。</li>
-                    <li><strong>社交媒体营销</strong>：在小红书、抖音等平台分享酒店特色，吸引年轻客户群体。</li>
-                </ol>
-                <p>根据行业数据，实施以上策略可使入住率提升<strong>15-25%</strong>。</p>`,
-                popular: true
-            },
-            {
-                id: 2,
-                category: 'service',
-                question: '如何降低客户投诉率？',
-                answer: `<p><strong>降低投诉率的关键措施：</strong></p>
-                <ol>
-                    <li><strong>加强员工培训</strong>：定期开展服务礼仪、应急处理培训，提高员工服务意识和专业能力。</li>
-                    <li><strong>建立预警机制</strong>：在入住时提前了解客户需求，主动提供帮助，将问题解决在萌芽状态。</li>
-                    <li><strong>快速响应投诉</strong>：设立24小时投诉热线，确保在30分钟内响应客户诉求。</li>
-                    <li><strong>定期收集反馈</strong>：通过问卷调查、回访等方式了解客户满意度，及时发现问题。</li>
-                    <li><strong>优化硬件设施</strong>：定期检查房间设备，确保空调、热水、网络等设施正常运行。</li>
-                </ol>
-                <p>优秀酒店的投诉率通常控制在<strong>1%以下</strong>。</p>`,
-                popular: true
-            },
-            {
-                id: 3,
-                category: 'cost',
-                question: '如何有效控制运营成本？',
-                answer: `<p><strong>运营成本控制策略：</strong></p>
-                <ol>
-                    <li><strong>能源管理</strong>：安装智能温控系统，根据入住情况调节空调温度，预计可节能<strong>15-20%</strong>。</li>
-                    <li><strong>人员优化</strong>：根据入住率调整员工排班，平季合理控制用工数量。</li>
-                    <li><strong>采购管理</strong>：与供应商建立长期合作关系，批量采购降低成本；定期比价，选择性价比高的供应商。</li>
-                    <li><strong>减少浪费</strong>：严格控制易耗品发放，推广环保用品，减少一次性用品使用。</li>
-                    <li><strong>维护保养</strong>：定期维护设备，延长使用寿命，避免大额维修费用。</li>
-                </ol>`,
-                popular: false
-            },
-            {
-                id: 4,
-                category: 'staff',
-                question: '如何提高员工的工作积极性？',
-                answer: `<p><strong>提升员工积极性的方法：</strong></p>
-                <ol>
-                    <li><strong>合理的薪酬体系</strong>：建立基本工资+绩效奖金+提成制度，多劳多得。</li>
-                    <li><strong>职业发展通道</strong>：为员工制定晋升计划，提供培训和学习机会。</li>
-                    <li><strong>改善工作环境</strong>：营造良好的团队氛围，定期组织团建活动。</li>
-                    <li><strong>激励机制</strong>：设立月度优秀员工、服务之星等评选，给予精神和物质奖励。</li>
-                    <li><strong>关心员工生活</strong>：提供住宿、餐饮等福利，帮助解决实际困难。</li>
-                </ol>
-                <p>满意的员工才能创造满意的客户，员工流失率应控制在<strong>20%以下</strong>。</p>`,
-                popular: false
-            },
-            {
-                id: 5,
-                category: 'marketing',
-                question: '如何打造酒店的差异化竞争优势？',
-                answer: `<p><strong>打造差异化优势的策略：</strong></p>
-                <ol>
-                    <li><strong>主题特色</strong>：打造独特的装修风格或主题（如亲子主题、商务主题、文化主题）。</li>
-                    <li><strong>服务创新</strong>：提供差异化服务，如24小时管家服务、特色早餐、接送机服务等。</li>
-                    <li><strong>文化融合</strong>：融入当地文化元素，举办文化活动，增强客户体验。</li>
-                    <li><strong>科技应用</strong>：引入智能入住、语音控制等科技元素，提升便捷性。</li>
-                    <li><strong>社区联动</strong>：与周边景点、餐厅、商场合作，为客户提供一站式体验。</li>
-                </ol>`,
-                popular: true
-            },
-            {
-                id: 6,
-                category: 'revenue',
-                question: '如何提高客房间夜收益（RevPAR）？',
-                answer: `<p><strong>提升RevPAR的有效途径：</strong></p>
-                <ol>
-                    <li><strong>平衡入住率与平均房价</strong>：在保持合理入住率的同时，逐步提高平均房价。</li>
-                    <li><strong>开发高价值客户</strong>：针对商务客、高端度假客推出高端房型和服务套餐。</li>
-                    <li><strong>优化房型结构</strong>：根据市场需求调整各房型比例，增加高收益房型数量。</li>
-                    <li><strong>动态定价</strong>：根据需求变化实时调整房价，实现收益最大化。</li>
-                    <li><strong>交叉销售</strong>：在入住时推荐附加服务（如早餐、增值服务），增加单客收益。</li>
-                </ol>
-                <p>行业优秀酒店的RevPAR通常高于市场平均<strong>20-30%</strong>。</p>`,
-                popular: false
-            },
-            {
-                id: 7,
-                category: 'service',
-                question: '如何提升客户忠诚度？',
-                answer: `<p><strong>提升客户忠诚度的策略：</strong></p>
-                <ol>
-                    <li><strong>会员体系</strong>：建立完善的会员等级制度，提供专属权益和优惠。</li>
-                    <li><strong>个性化服务</strong>：记录客户偏好，提供定制化服务（如喜欢的房型、楼层、枕头类型）。</li>
-                    <li><strong>节日关怀</strong>：在客户生日、节日发送祝福和优惠信息。</li>
-                    <li><strong>积分奖励</strong>：通过积分兑换、折扣券等方式激励复购。</li>
-                    <li><strong>客户关怀</strong>：入住前后主动联系，收集反馈，持续改进服务。</li>
-                </ol>
-                <p>忠诚客户的复购率是新客户的<strong>3-5倍</strong>，营销成本仅为新客户的<strong>1/5</strong>。</p>`,
-                popular: false
-            },
-            {
-                id: 8,
-                category: 'cost',
-                question: '如何有效管理酒店的水电成本？',
-                answer: `<p><strong>水电成本管理技巧：</strong></p>
-                <ol>
-                    <li><strong>智能控制系统</strong>：安装房间智能控制系统，客人离开时自动关闭空调、灯光。</li>
-                    <li><strong>LED照明</strong>：全面使用LED节能灯具，可节能<strong>50%以上</strong>。</li>
-                    <li><strong>变频设备</strong>：使用变频空调、水泵等设备，根据需求自动调节。</li>
-                    <li><strong>节水器具</strong>：安装节水龙头、节水马桶，减少水资源浪费。</li>
-                    <li><strong>定期维护</strong>：定期检查管道、线路，避免漏水漏电造成的损失。</li>
-                </ol>`,
-                popular: false
-            },
-            {
-                id: 9,
-                category: 'marketing',
-                question: '如何利用新媒体进行酒店营销？',
-                answer: `<p><strong>新媒体营销策略：</strong></p>
-                <ol>
-                    <li><strong>小红书</strong>：发布精美图文，分享酒店特色、周边景点、美食推荐。</li>
-                    <li><strong>抖音</strong>：拍摄短视频，展示酒店环境、服务细节、客户体验。</li>
-                    <li><strong>微信公众号</strong>：定期推送优惠活动、酒店资讯，维护客户关系。</li>
-                    <li><strong>直播带货</strong>：通过直播展示酒店，推出限时优惠套餐。</li>
-                    <li><strong>KOL合作</strong>：与旅游博主、网红合作，扩大品牌影响力。</li>
-                </ol>
-                <p>新媒体营销已成为酒店获取客源的重要渠道，投入产出比可达<strong>1:5-1:10</strong>。</p>`,
-                popular: false
-            },
-            {
-                id: 10,
-                category: 'staff',
-                question: '如何有效降低员工流失率？',
-                answer: `<p><strong>降低员工流失率的措施：</strong></p>
-                <ol>
-                    <li><strong>公平公正的管理</strong>：建立透明的晋升机制，让员工看到发展前景。</li>
-                    <li><strong>合理的薪酬待遇</strong>：提供有竞争力的薪资和福利，定期调整。</li>
-                    <li><strong>良好的工作氛围</strong>：营造尊重、包容的团队文化，减少内部矛盾。</li>
-                    <li><strong>培训与发展</strong>：提供技能培训和职业规划，帮助员工成长。</li>
-                    <li><strong>员工关怀</strong>：关注员工身心健康，提供必要的支持和帮助。</li>
-                </ol>
-                <p>员工流失率应控制在<strong>20%以下</strong>，优秀酒店的流失率通常在<strong>10%左右</strong>。</p>`,
-                popular: false
-            }
-        ];
-
+        let faqData = [];
         let currentCategory = 'all';
         let searchTerm = '';
+
+        async function loadFaqs() {
+            try {
+                const category = currentCategory === 'all' ? '' : currentCategory;
+                faqData = await apiRequest('/faq' + (category ? '?category=' + category : ''));
+                renderFAQs();
+            } catch (e) {
+                console.error('加载FAQ失败', e);
+            }
+        }
 
         function renderFAQs() {
             const faqList = document.getElementById('faqList');
@@ -613,17 +475,13 @@
             const noResults = document.getElementById('noResults');
 
             let filteredFAQs = faqData.filter(faq => {
-                const matchCategory = currentCategory === 'all' || faq.category === currentCategory;
                 const matchSearch = searchTerm === '' || 
                     faq.question.toLowerCase().includes(searchTerm.toLowerCase()) ||
                     faq.answer.toLowerCase().includes(searchTerm.toLowerCase());
-                return matchCategory && matchSearch;
+                return matchSearch;
             });
 
-            const popularFAQs = faqData.filter(faq => faq.popular && 
-                (searchTerm === '' || 
-                faq.question.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                faq.answer.toLowerCase().includes(searchTerm.toLowerCase())));
+            const popularFAQs = filteredFAQs.filter(faq => faq.popular);
 
             if (filteredFAQs.length === 0) {
                 faqList.innerHTML = '';
@@ -636,7 +494,6 @@
             noResults.style.display = 'none';
             document.querySelector('.popular-questions').style.display = 'block';
 
-            // Render popular questions
             popularList.innerHTML = popularFAQs.map(faq => `
                 <div class="faq-item" data-id="${faq.id}">
                     <div class="faq-question" onclick="toggleFAQ(${faq.id})">
@@ -661,7 +518,6 @@
                 </div>
             `).join('');
 
-            // Render all FAQs
             faqList.innerHTML = filteredFAQs.map(faq => `
                 <div class="faq-item" data-id="${faq.id}">
                     <div class="faq-question" onclick="toggleFAQ(${faq.id})">
@@ -699,7 +555,6 @@
         function filterCategory(category) {
             currentCategory = category;
             
-            // Update active tab
             document.querySelectorAll('.category-tab').forEach(tab => {
                 tab.classList.remove('active');
                 if (tab.dataset.category === category) {
@@ -707,7 +562,7 @@
                 }
             });
 
-            renderFAQs();
+            loadFaqs();
         }
 
         function handleSearch() {
@@ -715,8 +570,7 @@
             renderFAQs();
         }
 
-        // Initial render
-        renderFAQs();
+        loadFaqs();
     </script>
 </body>
 </html>

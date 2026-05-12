@@ -84,17 +84,21 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 20px 30px;
+            padding: 16px 20px;
             background: var(--bg-light);
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
         }
 
         .progress-step {
             display: flex;
             align-items: center;
-            gap: 8px;
-            font-size: 13px;
+            gap: 6px;
+            font-size: 12px;
             color: var(--text-light);
             transition: all 0.3s ease;
+            white-space: nowrap;
+            flex-shrink: 0;
         }
 
         .progress-step.active {
@@ -133,7 +137,7 @@
         .form-content {
             flex: 1;
             overflow-y: auto;
-            padding: 30px;
+            padding: 24px 20px;
         }
 
         .step {
@@ -188,6 +192,7 @@
         .form-group input[type="text"],
         .form-group input[type="number"],
         .form-group input[type="tel"],
+        .form-group input[type="password"],
         .form-group textarea {
             width: 100%;
             padding: 12px 14px;
@@ -225,13 +230,16 @@
         .checkbox-option {
             display: flex;
             align-items: center;
+            justify-content: center;
             gap: 8px;
-            padding: 10px 16px;
+            padding: 10px 14px;
             border: 2px solid var(--border-color);
             border-radius: 8px;
             cursor: pointer;
             transition: all 0.3s ease;
             background: var(--white);
+            flex: 1 1 calc(50% - 6px);
+            min-width: 0;
         }
 
         .checkbox-option:hover {
@@ -243,6 +251,16 @@
             width: 18px;
             height: 18px;
             cursor: pointer;
+            flex-shrink: 0;
+            margin: 0;
+            vertical-align: middle;
+            position: relative;
+            top: -1px;
+        }
+
+        .checkbox-option span {
+            line-height: 18px;
+            font-size: 14px;
         }
 
         .radio-group {
@@ -251,16 +269,27 @@
             gap: 12px;
         }
 
+        .radio-group.single-row {
+            flex-wrap: nowrap;
+        }
+
         .radio-option {
             display: flex;
             align-items: center;
+            justify-content: center;
             gap: 8px;
-            padding: 10px 16px;
+            padding: 10px 14px;
             border: 2px solid var(--border-color);
             border-radius: 8px;
             cursor: pointer;
             transition: all 0.3s ease;
             background: var(--white);
+            flex: 1 1 calc(33% - 8px);
+            min-width: 0;
+        }
+
+        .radio-group.single-row .radio-option {
+            flex: 1;
         }
 
         .radio-option:hover {
@@ -272,71 +301,82 @@
             width: 18px;
             height: 18px;
             cursor: pointer;
+            flex-shrink: 0;
+            margin: 0;
+            vertical-align: middle;
+            position: relative;
+            top: -1px;
         }
 
-        .room-inputs {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-            gap: 12px;
+        .radio-option span {
+            line-height: 18px;
+            font-size: 14px;
         }
 
-        .room-input {
+        .room-type-row, .dept-row {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .room-type-row .rt-name, .dept-row .dept-name {
+            flex: 1;
+            min-width: 0;
+            width: auto !important;
+            padding: 10px 12px !important;
+            border: 2px solid var(--border-color) !important;
+            border-radius: 8px !important;
+            font-size: 14px !important;
+            font-family: 'Source Sans Pro', sans-serif !important;
+            color: var(--text-dark) !important;
+            background: var(--white) !important;
+        }
+
+        .room-type-row .rt-count, .dept-row .dept-count {
+            width: 80px !important;
+            flex-shrink: 0;
+            padding: 10px !important;
+            border: 2px solid var(--border-color) !important;
+            border-radius: 8px !important;
+            font-size: 14px !important;
+            font-family: 'Source Sans Pro', sans-serif !important;
+            color: var(--text-dark) !important;
+            background: var(--white) !important;
+            text-align: center;
+        }
+
+        .room-type-row .rt-name:focus, .room-type-row .rt-count:focus,
+        .dept-row .dept-name:focus, .dept-row .dept-count:focus {
+            outline: none;
+            border-color: var(--accent-gold);
+        }
+
+        .rt-remove-btn {
+            width: 32px;
+            height: 32px;
+            border: none;
+            background: #fed7d7;
+            color: #e53e3e;
+            border-radius: 8px;
+            font-size: 18px;
+            cursor: pointer;
             display: flex;
             align-items: center;
-            gap: 8px;
+            justify-content: center;
+            flex-shrink: 0;
+            transition: background 0.2s;
         }
 
-        .room-input input {
-            width: 80px;
-            padding: 10px;
-            border: 2px solid var(--border-color);
-            border-radius: 8px;
-            font-size: 14px;
-            text-align: center;
-        }
-
-        .room-input input:focus {
-            outline: none;
-            border-color: var(--accent-gold);
-        }
-
-        .staff-inputs {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
-            gap: 12px;
-        }
-
-        .staff-input {
-            display: flex;
-            flex-direction: column;
-            gap: 6px;
-        }
-
-        .staff-input label {
-            font-size: 13px;
-            font-weight: 500;
-            color: var(--text-dark);
-        }
-
-        .staff-input input {
-            padding: 10px;
-            border: 2px solid var(--border-color);
-            border-radius: 8px;
-            font-size: 14px;
-            text-align: center;
-        }
-
-        .staff-input input:focus {
-            outline: none;
-            border-color: var(--accent-gold);
+        .rt-remove-btn:hover {
+            background: #feb2b2;
         }
 
         .footer {
-            padding: 20px 30px;
+            padding: 16px 20px;
             border-top: 1px solid var(--border-color);
             display: flex;
             justify-content: space-between;
-            gap: 16px;
+            gap: 12px;
         }
 
         .btn {
@@ -450,7 +490,17 @@
             color: var(--text-light);
             margin-bottom: 24px;
         }
+
+        @media (max-width: 400px) {
+            .radio-group.single-row {
+                flex-wrap: wrap;
+            }
+            .radio-group.single-row .radio-option {
+                flex: 1 1 calc(50% - 6px);
+            }
+        }
     </style>
+    <link rel="stylesheet" href="modal.css">
 </head>
 <body>
     <div class="register-container">
@@ -497,8 +547,13 @@
                     <label>验证码 <span class="required">*</span></label>
                     <div style="display: flex; gap: 10px;">
                         <input type="text" id="code" placeholder="请输入验证码" required style="flex: 1;">
-                        <button type="button" class="btn btn-secondary" onclick="sendCode()" style="white-space: nowrap;">获取验证码</button>
+                        <button type="button" id="sendCodeBtn" class="btn btn-secondary" onclick="sendCode()" style="white-space: nowrap;">获取验证码</button>
                     </div>
+                </div>
+
+                <div class="form-group">
+                    <label>密码 <span class="required">*</span></label>
+                    <input type="password" id="password" placeholder="请设置密码（至少8位）" required>
                 </div>
 
                 <div class="form-group">
@@ -533,28 +588,36 @@
             <!-- Step 2: Room Configuration -->
             <div class="step" id="step2">
                 <h3 class="step-title">房间配置信息</h3>
-                <p class="step-description">该酒店有多少可售房间数呢？（实际可售房量；无该房型填0）</p>
+                <p class="step-description">该酒店有多少可售房间数呢？（实际可售房量；无该房型填0或删除）</p>
 
                 <div class="form-group">
-                    <label>房间类型及数量 <span class="required">*</span></label>
-                    <div class="room-inputs">
-                        <div class="room-input">
-                            <label>总数</label>
-                            <input type="number" id="totalRooms" min="0" placeholder="0" required>
+                    <label>总房间数 <span class="required">*</span></label>
+                    <input type="number" id="totalRooms" min="0" placeholder="0" required style="width:100%;padding:12px 14px;border:2px solid var(--border-color);border-radius:8px;font-size:14px;text-align:left;">
+                </div>
+
+                <div class="form-group">
+                    <label>房型配置</label>
+                    <div id="roomTypeList" style="display:flex;flex-direction:column;gap:10px;">
+                        <div class="room-type-row">
+                            <input type="text" class="rt-name" placeholder="房型名称" value="大床房">
+                            <input type="number" class="rt-count" placeholder="数量" min="0">
+                            <button type="button" class="rt-remove-btn" onclick="this.parentElement.remove()" title="删除">×</button>
                         </div>
-                        <div class="room-input">
-                            <label>大床房</label>
-                            <input type="number" id="kingRooms" min="0" placeholder="0">
+                        <div class="room-type-row">
+                            <input type="text" class="rt-name" placeholder="房型名称" value="标准间">
+                            <input type="number" class="rt-count" placeholder="数量" min="0">
+                            <button type="button" class="rt-remove-btn" onclick="this.parentElement.remove()" title="删除">×</button>
                         </div>
-                        <div class="room-input">
-                            <label>标准间</label>
-                            <input type="number" id="twinRooms" min="0" placeholder="0">
-                        </div>
-                        <div class="room-input">
-                            <label>家庭房</label>
-                            <input type="number" id="familyRooms" min="0" placeholder="0">
+                        <div class="room-type-row">
+                            <input type="text" class="rt-name" placeholder="房型名称" value="家庭房">
+                            <input type="number" class="rt-count" placeholder="数量" min="0">
+                            <button type="button" class="rt-remove-btn" onclick="this.parentElement.remove()" title="删除">×</button>
                         </div>
                     </div>
+                    <button type="button" class="btn btn-secondary" onclick="addRoomTypeRow()" style="margin-top:10px;width:100%;display:flex;align-items:center;justify-content:center;gap:6px;">
+                        <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
+                        添加房型
+                    </button>
                 </div>
             </div>
 
@@ -564,33 +627,43 @@
                 <p class="step-description">该酒店现有多少员工呢？（如含外包可备注）</p>
 
                 <div class="form-group">
-                    <label>各部门人员配置 <span class="required">*</span></label>
-                    <div class="staff-inputs">
-                        <div class="staff-input">
-                            <label>在岗总人数</label>
-                            <input type="number" id="totalStaff" min="0" placeholder="0" required>
+                    <label>在岗总人数 <span class="required">*</span></label>
+                    <input type="number" id="totalStaff" min="0" placeholder="0" required style="width:100%;padding:12px 14px;border:2px solid var(--border-color);border-radius:8px;font-size:14px;text-align:left;">
+                </div>
+
+                <div class="form-group">
+                    <label>各部门人数</label>
+                    <div id="deptStaffList" style="display:flex;flex-direction:column;gap:10px;">
+                        <div class="dept-row">
+                            <input type="text" class="dept-name" placeholder="部门名称" value="前台部">
+                            <input type="number" class="dept-count" placeholder="人数" min="0">
+                            <button type="button" class="rt-remove-btn" onclick="this.parentElement.remove()" title="删除">×</button>
                         </div>
-                        <div class="staff-input">
-                            <label>前台</label>
-                            <input type="number" id="frontDesk" min="0" placeholder="0">
+                        <div class="dept-row">
+                            <input type="text" class="dept-name" placeholder="部门名称" value="客房部">
+                            <input type="number" class="dept-count" placeholder="人数" min="0">
+                            <button type="button" class="rt-remove-btn" onclick="this.parentElement.remove()" title="删除">×</button>
                         </div>
-                        <div class="staff-input">
-                            <label>客房</label>
-                            <input type="number" id="housekeeping" min="0" placeholder="0">
+                        <div class="dept-row">
+                            <input type="text" class="dept-name" placeholder="部门名称" value="餐饮部">
+                            <input type="number" class="dept-count" placeholder="人数" min="0">
+                            <button type="button" class="rt-remove-btn" onclick="this.parentElement.remove()" title="删除">×</button>
                         </div>
-                        <div class="staff-input">
-                            <label>餐厅</label>
-                            <input type="number" id="restaurant" min="0" placeholder="0">
+                        <div class="dept-row">
+                            <input type="text" class="dept-name" placeholder="部门名称" value="维保部">
+                            <input type="number" class="dept-count" placeholder="人数" min="0">
+                            <button type="button" class="rt-remove-btn" onclick="this.parentElement.remove()" title="删除">×</button>
                         </div>
-                        <div class="staff-input">
-                            <label>维保</label>
-                            <input type="number" id="maintenance" min="0" placeholder="0">
-                        </div>
-                        <div class="staff-input">
-                            <label>行政</label>
-                            <input type="number" id="admin" min="0" placeholder="0">
+                        <div class="dept-row">
+                            <input type="text" class="dept-name" placeholder="部门名称" value="行政部">
+                            <input type="number" class="dept-count" placeholder="人数" min="0">
+                            <button type="button" class="rt-remove-btn" onclick="this.parentElement.remove()" title="删除">×</button>
                         </div>
                     </div>
+                    <button type="button" class="btn btn-secondary" onclick="addDeptRow()" style="margin-top:10px;width:100%;display:flex;align-items:center;justify-content:center;gap:6px;">
+                        <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
+                        添加部门
+                    </button>
                 </div>
 
                 <div class="form-group">
@@ -647,7 +720,7 @@
 
                 <div class="form-group">
                     <label>预算情况 <span class="required">*</span></label>
-                    <div class="radio-group">
+                    <div class="radio-group single-row">
                         <label class="radio-option">
                             <input type="radio" name="budget" value="yes" required>
                             <span>有预算</span>
@@ -698,6 +771,7 @@
         <div class="gold-line"></div>
     </div>
 
+    <script src="api.js"></script>
     <script>
         let currentStep = 1;
         const totalSteps = 5;
@@ -770,32 +844,127 @@
             });
 
             if (!isValid) {
-                alert('请填写所有必填项');
+                yingliAlert('请填写所有必填项');
             }
 
             return isValid;
         }
 
-        function sendCode() {
+        let codeCountdown = 0;
+        async function sendCode() {
             const phone = document.getElementById('phone').value;
             if (!phone) {
-                alert('请先输入手机号码');
+                yingliAlert('请先输入手机号码');
                 return;
             }
-            alert(`验证码已发送到 ${phone}`);
+
+            try {
+                await apiRequest('/auth/sms/send', {
+                    method: 'POST',
+                    body: JSON.stringify({ phone })
+                });
+
+                const btn = document.getElementById('sendCodeBtn');
+                btn.disabled = true;
+                codeCountdown = 60;
+                btn.textContent = `${codeCountdown}秒后重发`;
+
+                const timer = setInterval(() => {
+                    codeCountdown--;
+                    btn.textContent = `${codeCountdown}秒后重发`;
+                    if (codeCountdown <= 0) {
+                        clearInterval(timer);
+                        btn.disabled = false;
+                        btn.textContent = '获取验证码';
+                    }
+                }, 1000);
+
+                yingliAlert('验证码已发送');
+            } catch (error) {
+                yingliAlert(error.message || '发送验证码失败');
+            }
         }
 
-        function submitForm() {
-            alert('注册成功！正在跳转...');
-            currentStep = 6;
-            showStep(currentStep);
+        function addRoomTypeRow() {
+            var container = document.getElementById('roomTypeList');
+            var row = document.createElement('div');
+            row.className = 'room-type-row';
+            row.innerHTML = '<input type="text" class="rt-name" placeholder="房型名称">' +
+                '<input type="number" class="rt-count" placeholder="数量" min="0">' +
+                '<button type="button" class="rt-remove-btn" onclick="this.parentElement.remove()" title="删除">×</button>';
+            container.appendChild(row);
+        }
+
+        function addDeptRow() {
+            var container = document.getElementById('deptStaffList');
+            var row = document.createElement('div');
+            row.className = 'dept-row';
+            row.innerHTML = '<input type="text" class="dept-name" placeholder="部门名称">' +
+                '<input type="number" class="dept-count" placeholder="人数" min="0">' +
+                '<button type="button" class="rt-remove-btn" onclick="this.parentElement.remove()" title="删除">×</button>';
+            container.appendChild(row);
+        }
+
+        async function submitForm() {
+            var attachments = Array.from(document.querySelectorAll('input[name="attachments"]:checked'))
+                .map(cb => cb.value).join(',');
+
+            var management = Array.from(document.querySelectorAll('input[name="management"]:checked'))
+                .map(cb => cb.value).join(',');
+
+            var budget = document.querySelector('input[name="budget"]:checked');
+
+            var roomTypes = [];
+            document.querySelectorAll('#roomTypeList .room-type-row').forEach(function(row) {
+                var name = row.querySelector('.rt-name').value.trim();
+                var count = parseInt(row.querySelector('.rt-count').value) || 0;
+                if (name && count > 0) {
+                    roomTypes.push({ name: name, count: count });
+                }
+            });
+
+            var deptStaff = [];
+            document.querySelectorAll('#deptStaffList .dept-row').forEach(function(row) {
+                var department = row.querySelector('.dept-name').value.trim();
+                var count = parseInt(row.querySelector('.dept-count').value) || 0;
+                if (department && count > 0) {
+                    deptStaff.push({ department: department, count: count });
+                }
+            });
+
+            var data = {
+                phone: document.getElementById('phone').value,
+                code: document.getElementById('code').value,
+                password: document.getElementById('password').value,
+                hotelName: document.getElementById('hotelName').value,
+                attachments: attachments,
+                totalRooms: parseInt(document.getElementById('totalRooms').value) || 0,
+                roomTypes: roomTypes,
+                totalStaff: parseInt(document.getElementById('totalStaff').value) || 0,
+                deptStaff: deptStaff,
+                staffRemark: document.getElementById('staffRemark').value,
+                managementExperience: management,
+                otherManagement: document.getElementById('otherManagement').value,
+                budgetStatus: budget ? budget.value : '',
+                budgetAmount: document.getElementById('budgetAmount').value
+            };
+
+            try {
+                await apiRequest('/auth/register', {
+                    method: 'POST',
+                    body: JSON.stringify(data)
+                });
+                currentStep = 6;
+                showStep(currentStep);
+            } catch (error) {
+                yingliAlert(error.message || '注册失败');
+            }
         }
 
         function goToHome() {
-            window.location.href = 'home.html';
+            window.location.href = 'login.html';
         }
 
-        // Handle "Other" checkbox in management background
         document.querySelectorAll('input[name="management"]').forEach(checkbox => {
             checkbox.addEventListener('change', function() {
                 const otherGroup = document.getElementById('otherManagementGroup');
@@ -804,7 +973,6 @@
             });
         });
 
-        // Handle budget radio buttons
         document.querySelectorAll('input[name="budget"]').forEach(radio => {
             radio.addEventListener('change', function() {
                 const budgetGroup = document.getElementById('budgetAmountGroup');

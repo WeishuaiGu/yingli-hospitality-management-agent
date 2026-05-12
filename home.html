@@ -673,10 +673,16 @@
         </button>
     </nav>
 
+    <script src="api.js"></script>
     <script>
         const messageInput = document.getElementById('messageInput');
         const sendBtn = document.getElementById('sendBtn');
         const chatContainer = document.getElementById('chatContainer');
+        let currentSessionId = '';
+
+        if (!checkAuth()) {
+            // redirect handled by checkAuth
+        }
 
         messageInput.addEventListener('input', function() {
             this.style.height = 'auto';
@@ -708,9 +714,15 @@
             showTypingIndicator();
 
             try {
-                const aiResponse = await callZhipuAI(message);
+                const result = await apiRequest('/chat', {
+                    method: 'POST',
+                    body: JSON.stringify({ message, sessionId: currentSessionId })
+                });
+                if (result.sessionId) {
+                    currentSessionId = result.sessionId;
+                }
                 hideTypingIndicator();
-                addAIMessage(aiResponse);
+                addAIMessage(result.reply);
             } catch (error) {
                 hideTypingIndicator();
                 addAIMessage('抱歉，我遇到了一些问题，请稍后再试。错误信息：' + error.message);
@@ -780,51 +792,6 @@
             if (typingIndicator) {
                 typingIndicator.remove();
             }
-        }
-
-        async function callZhipuAI(message) {
-            const apiKey = '4b494336b3bb4d64b413505c720f1de0.QWnKG9uy2rFjYDyV';
-            const url = 'https://open.bigmodel.cn/api/paas/v4/chat/completions';
-
-            const systemPrompt = `你是一个专业的酒店管理智能助手，名为"迎鲤酒店智能助手"。你的职责是：
-1. 提供专业的酒店经营管理建议
-2. 分析酒店行业问题并给出解决方案
-3. 帮助用户提高酒店的运营效率和收益
-4. 回答关于酒店行业的各种问题
-5. 用专业、友好、简洁的语言回答
-6. 回答时结合酒店行业最佳实践和数据
-7. 如果用户的问题不够具体，可以主动询问更多细节以便给出更准确的建议`;
-
-            const response = await fetch(url, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${apiKey}`
-                },
-                body: JSON.stringify({
-                    model: 'glm-4',
-                    messages: [
-                        {
-                            role: 'system',
-                            content: systemPrompt
-                        },
-                        {
-                            role: 'user',
-                            content: message
-                        }
-                    ],
-                    temperature: 0.7,
-                    max_tokens: 2000
-                })
-            });
-
-            if (!response.ok) {
-                const errorData = await response.json();
-                throw new Error(errorData.error?.message || `API请求失败: ${response.status}`);
-            }
-
-            const data = await response.json();
-            return data.choices[0].message.content;
         }
 
         function parseMarkdown(text) {

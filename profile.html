@@ -383,6 +383,7 @@
             font-weight: 600;
         }
     </style>
+    <link rel="stylesheet" href="modal.css">
 </head>
 <body>
     <header class="header">
@@ -393,10 +394,10 @@
 
     <div class="profile-card">
         <div class="profile-header">
-            <div class="avatar">李</div>
+            <div class="avatar avatar-text">--</div>
             <div class="profile-info">
-                <div class="user-name">李经理</div>
-                <div class="user-phone">138****8888</div>
+                <div class="user-name">--</div>
+                <div class="user-phone">--</div>
                 <div class="vip-badge">
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
                         <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
@@ -407,40 +408,40 @@
         </div>
 
         <div class="hotel-info">
-            <div class="hotel-name">悦悦精品酒店</div>
+            <div class="hotel-name" id="hotelNameDisplay">--</div>
             <div class="hotel-details">
                 <div class="detail-item">
                     <svg viewBox="0 0 24 24">
                         <path d="M7 13c1.66 0 3-1.34 3-3S8.66 7 7 7s-3 1.34-3 3 1.34 3 3 3zm12-6h-8v7H3V5H1v15h2v-3h18v3h2v-9c0-2.21-1.79-4-4-4z"/>
                     </svg>
-                    <span>120间客房</span>
+                    <span id="roomCountDisplay">--间客房</span>
                 </div>
                 <div class="detail-item">
                     <svg viewBox="0 0 24 24">
                         <path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/>
                     </svg>
-                    <span>45名员工</span>
+                    <span id="staffCountDisplay">--名员工</span>
                 </div>
                 <div class="detail-item">
                     <svg viewBox="0 0 24 24">
                         <path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"/>
                     </svg>
-                    <span>注册365天</span>
+                    <span id="regDaysDisplay">注册--天</span>
                 </div>
             </div>
         </div>
 
         <div class="stats-grid">
             <div class="stat-item">
-                <div class="stat-value">856</div>
+                <div class="stat-value" id="consultCount">--</div>
                 <div class="stat-label">咨询次数</div>
             </div>
             <div class="stat-item">
-                <div class="stat-value">32</div>
+                <div class="stat-value" id="savedCount">--</div>
                 <div class="stat-label">收藏问题</div>
             </div>
             <div class="stat-item">
-                <div class="stat-value">15</div>
+                <div class="stat-value" id="usageDays">--</div>
                 <div class="stat-label">使用天数</div>
             </div>
         </div>
@@ -505,7 +506,7 @@
                     <div class="menu-title">消息通知</div>
                     <div class="menu-desc">管理消息提醒设置</div>
                 </div>
-                <div class="notification-badge">3</div>
+                <div class="notification-badge" id="notifBadge" style="display:none;">0</div>
                 <svg class="menu-arrow" viewBox="0 0 24 24">
                     <path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z"/>
                 </svg>
@@ -582,7 +583,32 @@
         </button>
     </nav>
 
+    <script src="api.js"></script>
     <script>
+        async function loadProfile() {
+            try {
+                const profile = await apiRequest('/user/profile');
+                if (profile.user) {
+                    document.querySelector('.user-name').textContent = profile.user.name || '用户';
+                    document.querySelector('.user-phone').textContent = profile.user.phone || '';
+                    document.querySelector('.avatar-text').textContent = (profile.user.name || '用')[0];
+                }
+                if (profile.hotel) {
+                    document.getElementById('hotelNameDisplay').textContent = profile.hotel.name || '';
+                    document.getElementById('roomCountDisplay').textContent = (profile.hotel.roomCount || 0) + '间客房';
+                    document.getElementById('staffCountDisplay').textContent = (profile.hotel.staffCount || 0) + '名员工';
+                    document.getElementById('regDaysDisplay').textContent = '注册' + (profile.hotel.registrationDays || 0) + '天';
+                }
+                if (profile.stats) {
+                    document.getElementById('consultCount').textContent = profile.stats.consultationCount || 0;
+                    document.getElementById('savedCount').textContent = profile.stats.savedQuestions || 0;
+                    document.getElementById('usageDays').textContent = profile.stats.usageDays || 0;
+                }
+            } catch (e) {
+                console.error('加载用户信息失败', e);
+            }
+        }
+
         function openModal(type) {
             switch(type) {
                 case 'hotelInfo':
@@ -595,7 +621,7 @@
                     window.location.href = 'business-data.html';
                     return;
                 case 'notifications':
-                    alert('消息通知功能即将上线，敬请期待！');
+                    yingliAlert('消息通知功能即将上线，敬请期待！');
                     return;
                 case 'security':
                     window.location.href = 'account-security.html';
@@ -604,18 +630,25 @@
                     window.location.href = 'faq.html';
                     return;
                 case 'about':
-                    alert('迎鲤酒店智能助手是一款专为酒店经营者打造的智能AI助手，提供专业的经营建议和解决方案。');
+                    yingliAlert('迎鲤酒店智能助手是一款专为酒店经营者打造的智能AI助手，提供专业的经营建议和解决方案。');
                     return;
                 default:
-                    alert('功能即将上线');
+                    yingliAlert('功能即将上线');
             }
         }
 
         function handleLogout() {
-            if (confirm('确定要退出登录吗？')) {
-                alert('已退出登录');
+            yingliConfirm('确定要退出登录吗？', null, async function() {
+                try {
+                    await apiRequest('/auth/logout', { method: 'POST' });
+                } catch (e) {}
+                removeToken();
                 window.location.href = 'login.html';
-            }
+            });
+        }
+
+        if (checkAuth()) {
+            loadProfile();
         }
     </script>
 </body>

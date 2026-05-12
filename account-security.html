@@ -533,20 +533,28 @@
         </section>
     </main>
 
+    <script src="api.js"></script>
     <script>
-        const STORAGE_KEY = 'yingli_user_info';
-        const demoUserInfo = {
-            phone: '13800138000',
-            lastLogin: {
-                time: '2024-04-26 14:30',
-                location: '上海市',
-                device: 'Chrome / Windows',
-                ip: '192.168.1.***'
-            }
-        };
-
         function goBack() {
             window.location.href = 'profile.html';
+        }
+
+        async function loadAccountInfo() {
+            try {
+                const info = await apiRequest('/account/info');
+                if (info.phone) {
+                    document.querySelector('.phone-number').textContent = info.phone;
+                }
+                if (info.lastLogin) {
+                    const infoItems = document.querySelectorAll('.info-value');
+                    if (infoItems[0]) infoItems[0].textContent = info.lastLogin.time ? info.lastLogin.time.replace('T', ' ').substring(0, 16) : '-';
+                    if (infoItems[1]) infoItems[1].textContent = info.lastLogin.location || '-';
+                    if (infoItems[2]) infoItems[2].textContent = info.lastLogin.device || '-';
+                    if (infoItems[3]) infoItems[3].textContent = info.lastLogin.ip || '-';
+                }
+            } catch (e) {
+                console.error('加载账户信息失败', e);
+            }
         }
 
         function checkPasswordStrength() {
@@ -605,7 +613,7 @@
             }
         }
 
-        function changePassword() {
+        async function changePassword() {
             const currentPassword = document.getElementById('currentPassword').value;
             const newPassword = document.getElementById('newPassword').value;
             const confirmPassword = document.getElementById('confirmPassword').value;
@@ -625,29 +633,21 @@
                 return;
             }
 
-            const strength = checkPasswordStrengthCalc(newPassword);
-            if (strength <= 1) {
-                showToast('密码强度太弱，请使用更复杂的密码', 'error');
-                return;
+            try {
+                await apiRequest('/account/password', {
+                    method: 'POST',
+                    body: JSON.stringify({ currentPassword, newPassword })
+                });
+                showToast('密码修改成功！', 'success');
+                setTimeout(() => {
+                    document.getElementById('currentPassword').value = '';
+                    document.getElementById('newPassword').value = '';
+                    document.getElementById('confirmPassword').value = '';
+                    document.getElementById('passwordStrength').style.display = 'none';
+                }, 1500);
+            } catch (error) {
+                showToast(error.message || '密码修改失败', 'error');
             }
-
-            showToast('密码修改成功！', 'success');
-            
-            setTimeout(() => {
-                document.getElementById('currentPassword').value = '';
-                document.getElementById('newPassword').value = '';
-                document.getElementById('confirmPassword').value = '';
-                document.getElementById('passwordStrength').style.display = 'none';
-            }, 1500);
-        }
-
-        function checkPasswordStrengthCalc(password) {
-            let strength = 0;
-            if (password.length >= 8) strength++;
-            if (/[a-z]/.test(password) && /[A-Z]/.test(password)) strength++;
-            if (/\d/.test(password)) strength++;
-            if (/[!@#$%^&*]/.test(password)) strength++;
-            return strength;
         }
 
         function togglePhoneEdit() {
@@ -664,7 +664,7 @@
         }
 
         let countdown = 0;
-        function sendVerifyCode() {
+        async function sendVerifyCode() {
             const newPhone = document.getElementById('newPhone').value;
             const btn = document.getElementById('sendCodeBtn');
 
@@ -688,10 +688,21 @@
                 }
             }, 1000);
 
-            showToast('验证码已发送', 'success');
+            try {
+                await apiRequest('/account/sms/send', {
+                    method: 'POST',
+                    body: JSON.stringify({ phone: newPhone })
+                });
+                showToast('验证码已发送', 'success');
+            } catch (error) {
+                showToast(error.message || '发送验证码失败', 'error');
+                clearInterval(timer);
+                btn.disabled = false;
+                btn.textContent = '获取验证码';
+            }
         }
 
-        function updatePhone() {
+        async function updatePhone() {
             const newPhone = document.getElementById('newPhone').value;
             const verifyCode = document.getElementById('verifyCode').value;
 
@@ -710,18 +721,22 @@
                 return;
             }
 
-            demoUserInfo.phone = newPhone;
-            localStorage.setItem(STORAGE_KEY, JSON.stringify(demoUserInfo));
-
-            showToast('手机号绑定成功！', 'success');
-            
-            setTimeout(() => {
-                document.querySelector('.phone-number').textContent = 
-                    newPhone.substring(0, 3) + '****' + newPhone.substring(7);
-                togglePhoneEdit();
-                document.getElementById('newPhone').value = '';
-                document.getElementById('verifyCode').value = '';
-            }, 1500);
+            try {
+                await apiRequest('/account/phone/update', {
+                    method: 'POST',
+                    body: JSON.stringify({ phone: newPhone, code: verifyCode })
+                });
+                showToast('手机号绑定成功！', 'success');
+                setTimeout(() => {
+                    document.querySelector('.phone-number').textContent = 
+                        newPhone.substring(0, 3) + '****' + newPhone.substring(7);
+                    togglePhoneEdit();
+                    document.getElementById('newPhone').value = '';
+                    document.getElementById('verifyCode').value = '';
+                }, 1500);
+            } catch (error) {
+                showToast(error.message || '绑定失败', 'error');
+            }
         }
 
         function showToast(message, type = 'success') {
@@ -741,22 +756,9 @@
             }, 3000);
         }
 
-        window.addEventListener('load', function() {
-            const savedData = localStorage.getItem(STORAGE_KEY);
-            if (savedData) {
-                const userInfo = JSON.parse(savedData);
-                if (userInfo.phone) {
-                    document.querySelector('.phone-number').textContent = 
-                        userInfo.phone.substring(0, 3) + '****' + userInfo.phone.substring(7);
-                }
-                if (userInfo.lastLogin) {
-                    const infoItems = document.querySelectorAll('.info-value');
-                    infoItems[0].textContent = userInfo.lastLogin.time;
-                    infoItems[1].textContent = userInfo.lastLogin.location;
-                    infoItems[2].textContent = userInfo.lastLogin.device;
-                }
-            }
-        });
+        if (checkAuth()) {
+            window.addEventListener('load', loadAccountInfo);
+        }
     </script>
 </body>
 </html>

@@ -414,38 +414,23 @@
                 <h2 class="section-title">运营指标</h2>
             </div>
 
-            <div class="metrics-grid">
+            <div class="metrics-grid" id="metricsGrid">
                 <div class="metric-card">
-                    <div class="metric-value">78.5<span style="font-size: 16px;">%</span></div>
+                    <div class="metric-value" id="occupancyRate">--<span style="font-size: 16px;">%</span></div>
                     <div class="metric-label">入住率</div>
-                    <div class="metric-change up">
-                        <svg viewBox="0 0 24 24">
-                            <path d="M7 14l5-5 5 5z"/>
-                        </svg>
-                        5.2%
-                    </div>
+                    <div class="metric-change" id="occupancyChange">--</div>
                 </div>
 
                 <div class="metric-card">
-                    <div class="metric-value">¥456</div>
+                    <div class="metric-value" id="avgPrice">¥--</div>
                     <div class="metric-label">平均房价(ADR)</div>
-                    <div class="metric-change up">
-                        <svg viewBox="0 0 24 24">
-                            <path d="M7 14l5-5 5 5z"/>
-                        </svg>
-                        12.3%
-                    </div>
+                    <div class="metric-change" id="adrChange">--</div>
                 </div>
 
                 <div class="metric-card">
-                    <div class="metric-value">¥358</div>
+                    <div class="metric-value" id="revpar">¥--</div>
                     <div class="metric-label">RevPAR</div>
-                    <div class="metric-change up">
-                        <svg viewBox="0 0 24 24">
-                            <path d="M7 14l5-5 5 5z"/>
-                        </svg>
-                        18.7%
-                    </div>
+                    <div class="metric-change" id="revparChange">--</div>
                 </div>
             </div>
         </section>
@@ -471,35 +456,8 @@
                             <th>利润率</th>
                         </tr>
                     </thead>
-                    <tbody>
-                        <tr>
-                            <td>2024-04</td>
-                            <td class="amount">¥150万</td>
-                            <td class="amount">¥90万</td>
-                            <td class="profit">¥60万</td>
-                            <td>40.0%</td>
-                        </tr>
-                        <tr>
-                            <td>2024-03</td>
-                            <td class="amount">¥145万</td>
-                            <td class="amount">¥88万</td>
-                            <td class="profit">¥57万</td>
-                            <td>39.3%</td>
-                        </tr>
-                        <tr>
-                            <td>2024-02</td>
-                            <td class="amount">¥130万</td>
-                            <td class="amount">¥80万</td>
-                            <td class="profit">¥50万</td>
-                            <td>38.5%</td>
-                        </tr>
-                        <tr>
-                            <td>2024-01</td>
-                            <td class="amount">¥120万</td>
-                            <td class="amount">¥75万</td>
-                            <td class="profit">¥45万</td>
-                            <td>37.5%</td>
-                        </tr>
+                    <tbody id="financeTableBody">
+                        <tr><td colspan="5" style="text-align:center;padding:20px;color:#718096;">加载中...</td></tr>
                     </tbody>
                 </table>
             </div>
@@ -524,54 +482,72 @@
         </section>
     </main>
 
+    <script src="api.js"></script>
     <script>
-        const STORAGE_KEY = 'yingli_business_data';
         let currentPeriod = 'month';
 
         function goBack() {
             window.location.href = 'profile.html';
         }
 
-        function changePeriod(period) {
+        async function loadBusinessData(period) {
             currentPeriod = period;
-            
+            try {
+                const metrics = await apiRequest('/business/metrics?period=' + period);
+                if (metrics) {
+                    document.getElementById('occupancyRate').innerHTML = (metrics.occupancyRate || '--') + '<span style="font-size: 16px;">%</span>';
+                    document.getElementById('avgPrice').textContent = '¥' + (metrics.adr || '--');
+                    document.getElementById('revpar').textContent = '¥' + (metrics.revpar || '--');
+                    if (metrics.changeRate) {
+                        var occ = metrics.changeRate.occupancyRate || 0;
+                        var adr = metrics.changeRate.adr || 0;
+                        var rev = metrics.changeRate.revpar || 0;
+                        var arrow = '<svg viewBox="0 0 24 24"><path d="M7 14l5-5 5 5z"/></svg>';
+                        document.getElementById('occupancyChange').innerHTML = arrow + Math.abs(occ) + '%';
+                        document.getElementById('occupancyChange').className = 'metric-change ' + (occ >= 0 ? 'up' : 'down');
+                        document.getElementById('adrChange').innerHTML = arrow + Math.abs(adr) + '%';
+                        document.getElementById('adrChange').className = 'metric-change ' + (adr >= 0 ? 'up' : 'down');
+                        document.getElementById('revparChange').innerHTML = arrow + Math.abs(rev) + '%';
+                        document.getElementById('revparChange').className = 'metric-change ' + (rev >= 0 ? 'up' : 'down');
+                    }
+                }
+
+                const financial = await apiRequest('/business/financial?period=' + period);
+                if (financial && financial.length > 0) {
+                    const tbody = document.getElementById('financeTableBody');
+                    tbody.innerHTML = financial.map(row => {
+                        const revenueWan = (row.revenue / 10000).toFixed(0);
+                        const costWan = (row.cost / 10000).toFixed(0);
+                        const profitWan = (row.profit / 10000).toFixed(0);
+                        return `<tr>
+                            <td>${row.month}</td>
+                            <td class="amount">¥${revenueWan}万</td>
+                            <td class="amount">¥${costWan}万</td>
+                            <td class="profit">¥${profitWan}万</td>
+                            <td>${row.profitRate}%</td>
+                        </tr>`;
+                    }).join('');
+                }
+            } catch (e) {
+                console.error('加载经营数据失败', e);
+            }
+        }
+
+        function changePeriod(period) {
             document.querySelectorAll('.time-btn').forEach(btn => {
                 btn.classList.remove('active');
             });
             event.target.classList.add('active');
-
-            showToast(`已切换到${getPeriodName(period)}数据`, 'info');
+            loadBusinessData(period);
         }
 
         function getPeriodName(period) {
-            const names = {
-                day: '今日',
-                week: '本周',
-                month: '本月',
-                year: '本年'
-            };
+            const names = { day: '今日', week: '本周', month: '本月', year: '本年' };
             return names[period] || '本月';
         }
 
         function exportData() {
-            const businessData = {
-                period: currentPeriod,
-                metrics: {
-                    occupancyRate: 78.5,
-                    adr: 456,
-                    revpar: 358
-                },
-                financial: [
-                    { month: '2024-04', revenue: 1500000, cost: 900000, profit: 600000, profitRate: 40 },
-                    { month: '2024-03', revenue: 1450000, cost: 880000, profit: 570000, profitRate: 39.3 },
-                    { month: '2024-02', revenue: 1300000, cost: 800000, profit: 500000, profitRate: 38.5 },
-                    { month: '2024-01', revenue: 1200000, cost: 750000, profit: 450000, profitRate: 37.5 }
-                ],
-                exportedAt: new Date().toISOString()
-            };
-
-            localStorage.setItem(STORAGE_KEY, JSON.stringify(businessData));
-            showToast('导出成功！', 'success');
+            showToast('导出功能暂未实现', 'info');
         }
 
         function showToast(message, type = 'success') {
@@ -580,7 +556,7 @@
             
             const icon = type === 'success' 
                 ? '<svg class="toast-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>'
-                : '<svg class="toast-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>';
+                : '<svg class="toast-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>';
             
             toast.innerHTML = `${icon}<span>${message}</span>`;
             document.body.appendChild(toast);
@@ -589,6 +565,10 @@
                 toast.style.opacity = '0';
                 setTimeout(() => toast.remove(), 300);
             }, 3000);
+        }
+
+        if (checkAuth()) {
+            window.addEventListener('load', () => loadBusinessData('month'));
         }
     </script>
 </body>
